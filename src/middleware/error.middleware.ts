@@ -13,7 +13,9 @@ export const errorConverter = (
   res: Express.Response,
   next: Express.NextFunction
 ) => {
-  console.log(err.stack);
+  if (IS_DEV) {
+    logger.info(err.stack);
+  }
 
   if (!(err instanceof HttpError)) {
     return next(createError(StatusCodes.INTERNAL_SERVER_ERROR, err.message));

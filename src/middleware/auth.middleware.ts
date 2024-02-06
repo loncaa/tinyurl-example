@@ -17,7 +17,7 @@ export async function isAuthenticated(
       createError(StatusCodes.UNAUTHORIZED, AuthErrorMessage.Unauthorized)
     );
 
-  //TODO: Check if api key in the database
+  //TODO: Check if api key is in the database
 
   return next();
 }

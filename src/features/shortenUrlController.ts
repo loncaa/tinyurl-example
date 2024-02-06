@@ -1,16 +1,36 @@
 import { Request, Response, NextFunction } from "express";
-
 import { StatusCodes } from "http-status-codes";
 import { InputBody } from "../validators";
 import prisma from "../clients/db.client";
 import createError from "http-errors";
 import { v4 } from "uuid";
 import { getClient } from "../clients/redis.client";
+import { logger } from "../commons/logger";
+import { Prisma } from "@prisma/client";
+import * as ShortUrlService from "../services/ShortUrlService";
 
-const createUniqueId = () => v4().replace(/-/g, "");
+const createUniqueId = () => {
+  const uuidArray = v4().split("-");
+  return uuidArray[uuidArray.length - 1];
+};
 
-const createShortenUrl = (uniqueId: string) =>
-  `${process.env.HOST}/${uniqueId}`;
+async function checkIfShortExists(
+  redisClient: any,
+  dbClient: Prisma.ShortUrlDelegate<any>,
+  uniqueId: string
+) {
+  const dataStringified = await redisClient.get(uniqueId);
+
+  if (dataStringified) {
+    return true;
+  }
+
+  const shortUrl = await ShortUrlService.findById(dbClient, uniqueId);
+  if (shortUrl) {
+    return true;
+  }
+  return false;
+}
 
 export default async function ShortenUrlController(
   req: Request,
@@ -20,39 +40,38 @@ export default async function ShortenUrlController(
   const { full, short } = req.body as InputBody;
 
   const redisClient = await getClient();
+  const shortUrlClient = prisma.shortUrl;
+
   let uniqueId = createUniqueId();
 
   if (short) {
+    // check if short id exists
     uniqueId = short;
 
-    const dataStringified = await redisClient.get(uniqueId);
+    const exists = await checkIfShortExists(
+      redisClient,
+      shortUrlClient,
+      uniqueId
+    );
 
-    if (dataStringified) {
+    if (exists) {
       return next(createError(StatusCodes.BAD_REQUEST, "Short not accepted"));
     }
+  } else {
+    // if not exists, check for full url
+    const shortUrl = await ShortUrlService.findByUrl(shortUrlClient, full);
 
-    const shortUrl = await prisma.shortUrl.findFirst({
-      where: {
-        id: uniqueId,
-      },
-    });
-
-    if (shortUrl) {
-      // not found in Redis but exists in Db
-      await redisClient.set(uniqueId, JSON.stringify(shortUrl));
-      return next(createError(StatusCodes.BAD_REQUEST, "Short not accepted"));
+    // if it is not private, return it
+    if (shortUrl && !shortUrl.private) {
+      return res.status(StatusCodes.ACCEPTED).send(shortUrl);
     }
   }
 
-  const data = await prisma.shortUrl.create({
-    data: {
-      id: uniqueId,
-      full: full,
-      shorten: createShortenUrl(uniqueId),
-    },
-  });
+  // otherwise, create a new entry
+  const data = await ShortUrlService.create(shortUrlClient, uniqueId, full);
+  if (data) {
+    redisClient.set(uniqueId, JSON.stringify(data));
+  }
 
-  redisClient.set(uniqueId, JSON.stringify(data));
-
-  res.status(StatusCodes.CREATED).send(data);
+  return res.status(StatusCodes.CREATED).send(data);
 }

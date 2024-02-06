@@ -1,20 +1,14 @@
 import { Request, Response, NextFunction } from "express";
 import { StatusCodes } from "http-status-codes";
-import { logger } from "../commons/logger";
 import { getClient } from "../clients/redis.client";
 import prisma from "../clients/db.client";
-import createError from "http-errors";
 import { ShortUrlDto } from "../commons/types";
+import { findById } from "../services/ShortUrlService";
+import { USAGE_STATISTICS_KEY } from "./transferStatistics";
 
-function redirectToOrigin(
-  redisClient: unknown,
-  res: Response,
-  originUrl: string
-) {
-  // increse count in redis
-  // store user agent into into redis
-
-  res.redirect(originUrl);
+function storeStatisticData(redisClient: any, req: Request, id: string) {
+  const usageStatisticsKey = `${USAGE_STATISTICS_KEY}:${id}`;
+  redisClient.lPush(usageStatisticsKey, new Date().toUTCString());
 }
 
 export default async function RedirectToOriginController(
@@ -31,30 +25,23 @@ export default async function RedirectToOriginController(
     try {
       const data = JSON.parse(dataStringified) as ShortUrlDto;
 
-      return redirectToOrigin(redisClient, res, data.full);
-    } catch (error) {
-      const internalError = error as Error;
-
-      return next(
-        createError(StatusCodes.INTERNAL_SERVER_ERROR, internalError.message)
-      );
+      storeStatisticData(redisClient, req, id);
+      return res.redirect(data.full);
+    } catch (parseError) {
+      return next(parseError);
     }
   }
 
-  const shortUrl = (await prisma.shortUrl.findFirst({
-    where: {
-      id: id,
-    },
-  })) as ShortUrlDto;
-
-  if (shortUrl) {
-    // not found in Redis but exists in Db
-    redisClient.set(id, JSON.stringify(shortUrl));
-    return redirectToOrigin(redisClient, res, shortUrl.full);
+  const shortUrl = await findById(prisma.shortUrl, id);
+  if (!shortUrl) {
+    return res.status(StatusCodes.OK).send({
+      message: "Url not found",
+    });
   }
 
-  logger.info(`Redirect to ${id}`);
-  res.status(StatusCodes.OK).send({
-    message: "Url not found",
-  });
+  // not found in Redis but exists in Db
+  redisClient.set(id, JSON.stringify(shortUrl));
+
+  storeStatisticData(redisClient, req, id);
+  return res.redirect(shortUrl.full);
 }

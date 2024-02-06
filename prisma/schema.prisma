@@ -14,25 +14,22 @@ model ShortUrl {
   id            String      @id
   full          String
   shorten       String
+  private       Boolean     @default(false)
   createdAt     DateTime    @default(now())
   updatedAt     DateTime    @updatedAt
 }
 
-model Statistic {
-  id            Int         @id
+model UsageStatistic {
+  id            Int         @id @default(autoincrement())
   shortUrlId    String
+  createdAt     DateTime
+}
+
+model VisitsCounter {
+  id            String      @id
   counter       Int
   createdAt     DateTime    @default(now())
   updatedAt     DateTime    @updatedAt
-}
-
-model UserAgentInfo {
-  id            Int         @id
-  shortUrlId    String
-  country       String
-  browser       String
-  region        String
-  createdAt     DateTime    @default(now())
 }
 
 model CheckDate {
