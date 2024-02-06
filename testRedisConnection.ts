@@ -1,7 +1,7 @@
 import "./src/commons/devenv";
 import { logger } from "./src/commons/logger";
 
-import { getClient } from "./src/commons/redis.client";
+import { getClient } from "./src/clients/redis.client";
 
 logger.info(`Redis connection test started`);
 

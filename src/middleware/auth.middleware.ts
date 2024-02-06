@@ -3,7 +3,7 @@ import { StatusCodes } from "http-status-codes";
 import createError from "http-errors";
 import { AuthErrorMessage } from "../commons/error.factory";
 
-const API_KEY = "X-API-KEY";
+const API_KEY = "x-api-key";
 
 export async function isAuthenticated(
   req: Request,

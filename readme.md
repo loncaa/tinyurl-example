@@ -47,7 +47,12 @@ Create a URL shortener with a JSON RESTful API containing 3 endpoints, one using
 ● Create GET endpoint  
     - 
 
+**Features**
+- 
+● Counter: collect redirect counts data on Redis and periodically transfer data to the Postgresql
+● UserAgentData: store location into Redis and periodically create a bulk create
+
 **Dependencies**
-`npm i zod winston express cors helmet http-errors http-status-codes morga @prisma/client`
+`npm i zod winston express cors helmet http-errors http-status-codes morga uuid @prisma/client`
 **Dev dependencies**
-`npm i --save-dev ts-node typescript dotenv nodemon prisma redis @types/express @types/http-errors @types/cors @types/http-status-codes @types/morgan @types/node @types/winston @types/redis`
+`npm i --save-dev ts-node typescript dotenv nodemon prisma redis @types/express @types/http-errors @types/cors @types/http-status-codes @types/morgan @types/node @types/winston @types/redis @types/uuid`

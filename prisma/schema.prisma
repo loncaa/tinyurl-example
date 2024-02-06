@@ -11,12 +11,31 @@ datasource db {
 }
 
 model ShortUrl {
-  id      Int     @id @default(autoincrement())
-  full    String
-  shorten String
+  id            String      @id
+  full          String
+  shorten       String
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+}
+
+model Statistic {
+  id            Int         @id
+  shortUrlId    String
+  counter       Int
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+}
+
+model UserAgentInfo {
+  id            Int         @id
+  shortUrlId    String
+  country       String
+  browser       String
+  region        String
+  createdAt     DateTime    @default(now())
 }
 
 model CheckDate {
-  id      Int     @id @default(autoincrement())
-  date    String
+  id            Int     @id @default(autoincrement())
+  date          String
 }

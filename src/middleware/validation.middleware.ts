@@ -15,9 +15,11 @@ export const verifyRequest = (
   const parseResponse = schema.safeParse(data);
   if (!parseResponse.success) {
     const { error } = parseResponse as Zod.SafeParseError<typeof schema>;
+    const errorCode = error.errors.map(({ message }) => `${message}`).join(",");
+
     return {
       failed: true,
-      message: error.message,
+      message: `Failed to validate payload: ${errorCode}`,
     };
   }
 

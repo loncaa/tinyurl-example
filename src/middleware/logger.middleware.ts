@@ -12,8 +12,7 @@ const skip = () => {
   return env !== "development";
 };
 
-const loggerFormat = (tag = "") =>
-  `:method ${tag}:url :status :response-time ms - :res[content-length]`;
+const loggerFormat = `:method :url :status :response-time ms - :res[content-length]`;
 
 // Build the morgan middleware
-export default (tag: string) => morgan(loggerFormat(tag), { stream, skip });
+export default morgan(loggerFormat, { stream, skip });
