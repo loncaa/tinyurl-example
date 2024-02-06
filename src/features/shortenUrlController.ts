@@ -1,11 +1,11 @@
 import { Request, Response, NextFunction } from "express";
 
 import { StatusCodes } from "http-status-codes";
-import { InputBody } from "../../validators";
-import prisma from "../../clients/db.client";
+import { InputBody } from "../validators";
+import prisma from "../clients/db.client";
 import createError from "http-errors";
 import { v4 } from "uuid";
-import { getClient } from "../../clients/redis.client";
+import { getClient } from "../clients/redis.client";
 
 const createUniqueId = () => v4().replace(/-/g, "");
 
@@ -18,18 +18,28 @@ export default async function ShortenUrlController(
   next: NextFunction
 ) {
   const { full, short } = req.body as InputBody;
+
+  const redisClient = await getClient();
   let uniqueId = createUniqueId();
 
   if (short) {
     uniqueId = short;
 
+    const dataStringified = await redisClient.get(uniqueId);
+
+    if (dataStringified) {
+      return next(createError(StatusCodes.BAD_REQUEST, "Short not accepted"));
+    }
+
     const shortUrl = await prisma.shortUrl.findFirst({
       where: {
-        id: short,
+        id: uniqueId,
       },
     });
 
     if (shortUrl) {
+      // not found in Redis but exists in Db
+      await redisClient.set(uniqueId, JSON.stringify(shortUrl));
       return next(createError(StatusCodes.BAD_REQUEST, "Short not accepted"));
     }
   }
@@ -42,7 +52,6 @@ export default async function ShortenUrlController(
     },
   });
 
-  const redisClient = await getClient();
   redisClient.set(uniqueId, JSON.stringify(data));
 
   res.status(StatusCodes.CREATED).send(data);

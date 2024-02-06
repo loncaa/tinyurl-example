@@ -1,10 +1,21 @@
 import { Request, Response, NextFunction } from "express";
 import { StatusCodes } from "http-status-codes";
-import { logger } from "../../commons/logger";
-import { getClient } from "../../clients/redis.client";
-import prisma from "../../clients/db.client";
+import { logger } from "../commons/logger";
+import { getClient } from "../clients/redis.client";
+import prisma from "../clients/db.client";
 import createError from "http-errors";
-import { ShortUrlDto } from "../../commons/types";
+import { ShortUrlDto } from "../commons/types";
+
+function redirectToOrigin(
+  redisClient: unknown,
+  res: Response,
+  originUrl: string
+) {
+  // increse count in redis
+  // store user agent into into redis
+
+  res.redirect(originUrl);
+}
 
 export default async function RedirectToOriginController(
   req: Request,
@@ -20,7 +31,7 @@ export default async function RedirectToOriginController(
     try {
       const data = JSON.parse(dataStringified) as ShortUrlDto;
 
-      return res.redirect(data.full);
+      return redirectToOrigin(redisClient, res, data.full);
     } catch (error) {
       const internalError = error as Error;
 
@@ -37,9 +48,9 @@ export default async function RedirectToOriginController(
   })) as ShortUrlDto;
 
   if (shortUrl) {
+    // not found in Redis but exists in Db
     redisClient.set(id, JSON.stringify(shortUrl));
-
-    return res.redirect(shortUrl.full);
+    return redirectToOrigin(redisClient, res, shortUrl.full);
   }
 
   logger.info(`Redirect to ${id}`);
