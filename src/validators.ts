@@ -1,3 +1,4 @@
+import moment from "moment";
 import zod from "zod";
 
 const shortenUrlPayloadValidator = zod.object({
@@ -16,6 +17,13 @@ type ShortenUrlPayload = zod.infer<typeof shortenUrlPayloadValidator>;
 
 const statisticQueryValidator = zod.object({
   period: zod.enum(["year", "month", "week", "day", "hour"]),
+  from: zod
+    .string()
+    .refine((value) => {
+      const date = moment(value, "YYYY-MM-DD");
+      return date.isValid();
+    }, "Date should be formatted like 'YYYY-MM-DD'")
+    .optional(),
   take: zod
     .string()
     .refine(
@@ -31,13 +39,6 @@ const statisticQueryValidator = zod.object({
     )
     .optional(),
   order: zod.enum(["asc", "desc"]).optional(),
-  startingYear: zod
-    .string()
-    .refine(
-      (value) => /^[0-9]*$/.test(value),
-      "Starting year should contain only numbers"
-    )
-    .optional(),
 });
 
 type StatisticQuery = zod.infer<typeof statisticQueryValidator>;

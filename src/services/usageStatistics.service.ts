@@ -13,7 +13,7 @@ export interface UsageStatisticsUpsertPayload {
 export interface FindManyByShortUrlIdPayload {
   id: string;
   period: string;
-  year: number;
+  startingFrom: Date;
   orderBy: "asc" | "desc";
   take?: number;
   nextCursor?: string;
@@ -23,7 +23,7 @@ export async function findManyByShortUrlId(
   usageStatistics: Prisma.UsageStatisticDelegate<any>,
   payload: FindManyByShortUrlIdPayload
 ): Promise<UsageStatisticDto[] | null> {
-  const { id, period, take, year, nextCursor, orderBy } = payload;
+  const { id, period, take, startingFrom, nextCursor, orderBy } = payload;
 
   try {
     const cursorId = nextCursor ? parseInt(nextCursor) : undefined;
@@ -41,8 +41,8 @@ export async function findManyByShortUrlId(
       where: {
         shortUrlId: id,
         period,
-        year: {
-          gte: year,
+        createdAt: {
+          gte: startingFrom,
         },
       },
       orderBy: {

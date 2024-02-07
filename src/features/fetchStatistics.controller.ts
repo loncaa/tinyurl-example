@@ -1,21 +1,22 @@
-import { Request, Response, NextFunction } from "express";
+import { Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
 import prisma from "../clients/db.client";
 import * as UsageStatisticsService from "../services/usageStatistics.service";
 import { StatisticQuery } from "../validators";
-import moment from "moment";
 
 export default async function FetchStatisticsController(
   req: Request,
   res: Response
 ) {
-  const { period, take, cursor, order, startingYear } =
-    req.query as StatisticQuery;
+  const { period, take, cursor, order, from } =
+    req.query as unknown as StatisticQuery;
   const { id } = req.params;
 
   const fetchQuantity = take ? parseInt(take) : 10;
   const orderBy = order || "desc";
-  const year = startingYear ? parseInt(startingYear) : moment().year();
+  const startingFrom = from
+    ? new Date(from)
+    : new Date(new Date().getFullYear(), 0, 1);
 
   const statistics = await UsageStatisticsService.findManyByShortUrlId(
     prisma.usageStatistic,
@@ -24,7 +25,7 @@ export default async function FetchStatisticsController(
       period,
       take: fetchQuantity,
       nextCursor: cursor,
-      year,
+      startingFrom,
       orderBy,
     }
   );
