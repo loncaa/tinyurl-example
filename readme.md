@@ -31,29 +31,28 @@ Create a URL shortener with a JSON RESTful API containing 3 endpoints, one using
 **Execution plan** 
 - 
 ● Initialize npm  
-    - `npm i zod winston express cors helmet http-errors http-status-codes morga uuid @prisma/client moment`  
-    - `npm i --save-dev ts-node typescript dotenv nodemon prisma redis @types/express @types/http-errors @types/cors @types/http-status-codes @types/morgan @types/node @types/winston @types/redis @types/uuid @types/moment`  
+&ensp; - `npm i zod winston express cors helmet http-errors http-status-codes morga uuid @prisma/client moment`  
+&ensp; - `npm i --save-dev ts-node typescript dotenv nodemon prisma redis @types/express @types/http-errors @types/cors @types/http-status-codes @types/morgan @types/node @types/winston @types/redis @types/uuid @types/moment`  
 ● Init GIT  
 ● Initialize Typescript, create build and debug script  
-    - `npx tsc --init`
-● Setup Database client
-    - `npx prisma init --datasource-provider postgresql`
-● Setup Redis client
+&ensp; - `npx tsc --init`  
+● Setup Database client  
+&ensp; - `npx prisma init --datasource-provider postgresql`  
+● Setup Redis client  
 ● Connect server with Docker containers of Redis and Postgresql 
 ● Create Shortener endpoint  
-    - use body validation `Zod validator`  
-    - use dummy auth API key  
-    - store in PostgreSQL and REDIS 
+&ensp;- use body validation `Zod validator`  
+&ensp;- use dummy auth API key  
+&ensp;- store in PostgreSQL and REDIS 
 ● Create Auth middleware  
-    - check for auth api key
-● Create GET endpoint  
-    - first check Redis then Database
-    - store metrics into Redis
-    - redirect to origin url
-● Create Transform statistic function
-● Create GEt statistic function
+&ensp;- check for auth api key  
+● Create GET endpoint
+&ensp;- first check Redis then Database  
+&ensp;- store metrics into Redis  
+&ensp; - redirect to origin url  
+● Create Transform statistic function  
+● Create GET statistic function  
 
 **Features**
 - 
 ● Counter: collect redirect counts data on Redis and periodically transfer data to the Postgresql
-● UserAgentData: store location into Redis and periodically create a bulk create
