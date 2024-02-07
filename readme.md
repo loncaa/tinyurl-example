@@ -1,16 +1,18 @@
-**Goal**  
+**Url Shortener**  
 -
 Create a URL shortener with a JSON RESTful API containing 3 endpoints, one using the GET method which will redirect the user to the original URL, one using the POST method to create a shortened URL, and the other using the GET method to return the app statistics.
 
+Execute migration script in first build:  
+`docker-compose up --detach --build; docker-compose exec app npm run tables:create`  
+
 **Requirements**  
 -
-● Create a Dockerfile  
-● Created using Node.js  
-● You can use Nestjs  
+● Node.js   
 ● Cache with Redis
 ● PostgreSQL database  
 ● Input JSON validation  
-● Error handling eg. HTTP status codes  
+● Error handling eg. HTTP status codes 
+● Dockerfile   
 ● Metrics  
 
 *POST request requirements:*  
@@ -53,9 +55,6 @@ Create a URL shortener with a JSON RESTful API containing 3 endpoints, one using
 ● Create Transform statistic function  
 ● Create GET statistic function  
 -
-
-execute migration script in first build:
-`docker-compose up --detach --build; docker-compose exec app npm run tables:create`  
 
 **Features**
 - 
