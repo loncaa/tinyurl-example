@@ -5,7 +5,10 @@ import {
   validateRequestQuery,
   validateRequestPayload,
 } from "./middleware/validation.middleware";
-import { inputBodyValidator, statisticQueryValidator } from "./validators";
+import {
+  shortenUrlPayloadValidator,
+  statisticQueryValidator,
+} from "./validators";
 import ShortenUrlController from "./features/shortenUrl.controller";
 import RedirectToOriginController from "./features/redirectToOrigin.controller";
 import FetchStatisticsController from "./features/fetchStatistics.controller";
@@ -24,7 +27,7 @@ const router = express.Router();
 router.post(
   "/api/shorten",
   isAuthenticated,
-  validateRequestPayload(inputBodyValidator),
+  validateRequestPayload(shortenUrlPayloadValidator),
   ShortenUrlController
 );
 

@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { StatusCodes } from "http-status-codes";
-import { InputBody } from "../validators";
+import { ShortenUrlPayload } from "../validators";
 import prisma from "../clients/db.client";
 import createError from "http-errors";
 import { v4 } from "uuid";
@@ -39,7 +39,7 @@ export default async function ShortenUrlController(
   res: Response,
   next: NextFunction
 ) {
-  const { full, short } = req.body as InputBody;
+  const { full, short } = req.body as ShortenUrlPayload;
 
   const redisClient = (await getClient()) as RedisClientType;
   const shortUrlClient = prisma.shortUrl;

@@ -1,6 +1,6 @@
 import zod from "zod";
 
-const inputBodyValidator = zod.object({
+const shortenUrlPayloadValidator = zod.object({
   full: zod.string().trim().url(),
   short: zod
     .string()
@@ -12,7 +12,7 @@ const inputBodyValidator = zod.object({
     .optional(),
 });
 
-type InputBody = zod.infer<typeof inputBodyValidator>;
+type ShortenUrlPayload = zod.infer<typeof shortenUrlPayloadValidator>;
 
 const statisticQueryValidator = zod.object({
   period: zod.enum(["year", "month", "week", "day", "hour"]),
@@ -43,8 +43,8 @@ const statisticQueryValidator = zod.object({
 type StatisticQuery = zod.infer<typeof statisticQueryValidator>;
 
 export {
-  inputBodyValidator,
+  shortenUrlPayloadValidator,
   statisticQueryValidator,
-  InputBody,
+  ShortenUrlPayload,
   StatisticQuery,
 };
