@@ -52,6 +52,10 @@ Create a URL shortener with a JSON RESTful API containing 3 endpoints, one using
 &ensp; - redirect to origin url  
 ● Create Transform statistic function  
 ● Create GET statistic function  
+-
+
+execute migration script in first build:
+`docker-compose up --detach --build; docker-compose exec app npm run tables:create`  
 
 **Features**
 - 

@@ -10,7 +10,9 @@
     "redisConnectionTest": "ts-node testRedisConnection.ts",
     "dbConnectionTest": "ts-node testDbConnection.ts",
     "dev": "nodemon --exec \"ts-node ./src/index.ts\"",
-    "watch": "tsc --watch"
+    "watch": "tsc --watch",
+    "build": "tsc",
+    "start": "node ./dist/index.js"
   },
   "author": "",
   "license": "ISC",

@@ -1,0 +1,42 @@
+version: '3.8'
+volumes:
+  data:
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      - postgres
+    image: server:latest
+    container_name: server
+    restart: always
+    ports:
+      - "3000:3001"
+    environment:
+      SERVER_PORT: 3001
+      NODE_ENV: production
+      HOST: server
+      REDIS_URL: "redis://redis:6379"
+      DATABASE_URL: "postgresql://pguser:password@postgres:5432/pgdb?schema=public"
+
+  redis:
+    image: "redis:latest"
+    container_name: redis
+    restart: always
+    ports:
+      - "6379:6379"
+
+  postgres:
+    image: "postgres:latest"
+    container_name: postgres
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: pguser
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: pgdb
+    volumes:
+      - data:/var/lib/postgresql/data
+      
