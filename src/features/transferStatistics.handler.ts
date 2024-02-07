@@ -28,7 +28,7 @@ async function processStatisticsData(
     counter: periodCount,
   });
 
-  //await redisClient.del(key);
+  await redisClient.del(key);
 }
 
 export default async function transferStatistics() {
