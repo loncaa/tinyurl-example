@@ -4,6 +4,7 @@ import { getClient } from "../clients/redis.client";
 import prisma from "../clients/db.client";
 import { logger } from "../commons/logger";
 import { RedisClientType } from "@redis/client";
+import * as UsageStatisticsService from "../services/UsageStatisticsService";
 
 export const USAGE_STATISTICS_KEY = "us";
 
@@ -19,33 +20,13 @@ async function processStatisticsData(
 
   const periodCount = parseInt((await redisClient.get(key)) || "0");
 
-  const entry = await prisma.usageStatistic.findFirst({
-    where: {
-      shortUrlId: shortUrlId,
-      period: periodId,
-      value: periodValue,
-      year: yearOfPeriod,
-    },
+  await UsageStatisticsService.upsert(prisma.usageStatistic, {
+    shortUrlId: shortUrlId,
+    period: periodId,
+    value: periodValue,
+    year: yearOfPeriod,
+    counter: periodCount,
   });
-
-  if (entry) {
-    await prisma.usageStatistic.update({
-      where: {
-        id: entry.id,
-      },
-      data: { counter: { increment: periodCount } },
-    });
-  } else {
-    await prisma.usageStatistic.create({
-      data: {
-        shortUrlId: shortUrlId,
-        period: periodId,
-        counter: periodCount,
-        value: periodValue,
-        year: yearOfPeriod,
-      },
-    });
-  }
 
   //await redisClient.del(key);
 }

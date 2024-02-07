@@ -39,7 +39,7 @@ app.listen(SERVER_PORT, () =>
   logger.info(`🚀 Server ready at: http://localhost:${SERVER_PORT}`)
 );
 
+// fetch the counters from REDIS and transfer them to the database every 10 minutes
 setInterval(() => {
-  // fetch the counters and transfer to database
-  //transferStatistics();
-}, 1000);
+  transferStatistics();
+}, 10 * 60 * 1000);
