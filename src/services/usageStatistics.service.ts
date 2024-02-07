@@ -74,7 +74,7 @@ export async function upsert(
 
   return await usageStatistic.create({
     data: {
-      shortUrlId: shortUrlId,
+      shortUrlId,
       period,
       counter,
       value,
