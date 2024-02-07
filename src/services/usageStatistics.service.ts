@@ -70,15 +70,15 @@ export async function upsert(
       },
       data: { counter: { increment: counter } },
     });
-  } else {
-    return await usageStatistic.create({
-      data: {
-        shortUrlId: shortUrlId,
-        period,
-        counter,
-        value,
-        year,
-      },
-    });
   }
+
+  return await usageStatistic.create({
+    data: {
+      shortUrlId: shortUrlId,
+      period,
+      counter,
+      value,
+      year,
+    },
+  });
 }
