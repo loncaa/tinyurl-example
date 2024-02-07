@@ -30,6 +30,14 @@ const statisticQueryValidator = zod.object({
       "Cursor should contain only numbers"
     )
     .optional(),
+  order: zod.enum(["asc", "desc"]).optional(),
+  startingYear: zod
+    .string()
+    .refine(
+      (value) => /^[0-9]*$/.test(value),
+      "Starting year should contain only numbers"
+    )
+    .optional(),
 });
 
 type StatisticQuery = zod.infer<typeof statisticQueryValidator>;

@@ -6,9 +6,9 @@ import {
   validateRequestPayload,
 } from "./middleware/validation.middleware";
 import { inputBodyValidator, statisticQueryValidator } from "./validators";
-import ShortenUrlController from "./features/shortenUrlController";
-import RedirectToOriginController from "./features/redirectToOriginController";
-import FetchStatisticsController from "./features/fetchStatisticsController";
+import ShortenUrlController from "./features/shortenUrl.controller";
+import RedirectToOriginController from "./features/redirectToOrigin.controller";
+import FetchStatisticsController from "./features/fetchStatistics.controller";
 
 // best case scenario: use external server as rate limiter
 const limiter = rateLimit({

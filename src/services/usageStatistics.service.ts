@@ -2,13 +2,29 @@ import { Prisma } from "@prisma/client";
 import { UsageStatisticDto } from "../commons/types";
 import { logger } from "../commons/logger";
 
+export interface UsageStatisticsUpsertPayload {
+  shortUrlId: string;
+  period: string;
+  value: number;
+  year: number;
+  counter: number;
+}
+
+export interface FindManyByShortUrlIdPayload {
+  id: string;
+  period: string;
+  year: number;
+  orderBy: "asc" | "desc";
+  take?: number;
+  nextCursor?: string;
+}
+
 export async function findManyByShortUrlId(
   usageStatistics: Prisma.UsageStatisticDelegate<any>,
-  id: string,
-  period: string,
-  take?: number,
-  nextCursor?: string
+  payload: FindManyByShortUrlIdPayload
 ): Promise<UsageStatisticDto[] | null> {
+  const { id, period, take, year, nextCursor, orderBy } = payload;
+
   try {
     const cursorId = nextCursor ? parseInt(nextCursor) : undefined;
 
@@ -25,9 +41,12 @@ export async function findManyByShortUrlId(
       where: {
         shortUrlId: id,
         period,
+        year: {
+          gte: year,
+        },
       },
       orderBy: {
-        createdAt: "desc",
+        createdAt: orderBy,
       },
       ...additionalOptions,
     });
@@ -41,13 +60,6 @@ export async function findManyByShortUrlId(
   return null;
 }
 
-export interface UsageStatisticsUpsertPayload {
-  shortUrlId: string;
-  period: string;
-  value: number;
-  year: number;
-  counter: number;
-}
 export async function upsert(
   usageStatistic: Prisma.UsageStatisticDelegate<any>,
   payload: UsageStatisticsUpsertPayload
