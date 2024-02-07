@@ -7,8 +7,8 @@ import { v4 } from "uuid";
 import { getClient } from "../clients/redis.client";
 import { logger } from "../commons/logger";
 import { Prisma } from "@prisma/client";
-import * as ShortUrlService from "../services/ShortUrlService";
-import * as RedisService from "../services/RedisService";
+import * as ShortUrlService from "../services/shortUrl.service";
+import * as RedisService from "../services/redis.service";
 import { RedisClientType } from "redis";
 
 const createUniqueId = () => {

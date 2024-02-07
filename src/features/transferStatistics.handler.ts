@@ -4,7 +4,7 @@ import { getClient } from "../clients/redis.client";
 import prisma from "../clients/db.client";
 import { logger } from "../commons/logger";
 import { RedisClientType } from "@redis/client";
-import * as UsageStatisticsService from "../services/UsageStatisticsService";
+import * as UsageStatisticsService from "../services/usageStatistics.service";
 
 export const USAGE_STATISTICS_KEY = "us";
 

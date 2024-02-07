@@ -1,7 +1,7 @@
 import { RedisClientType } from "redis";
 import moment from "moment";
 import { ShortUrlDto } from "../commons/types";
-import { USAGE_STATISTICS_KEY } from "../features/transferStatistics";
+import { USAGE_STATISTICS_KEY } from "../features/transferStatistics.handler";
 import { logger } from "../commons/logger";
 
 export function storeStatisticData(redisClient: RedisClientType, id: string) {

@@ -3,9 +3,9 @@ import { StatusCodes } from "http-status-codes";
 import { getClient } from "../clients/redis.client";
 import prisma from "../clients/db.client";
 import { ShortUrlDto } from "../commons/types";
-import { findById } from "../services/ShortUrlService";
+import { findById } from "../services/shortUrl.service";
 import { RedisClientType } from "redis";
-import * as RedisService from "../services/RedisService";
+import * as RedisService from "../services/redis.service";
 
 export default async function RedirectToOriginController(
   req: Request,

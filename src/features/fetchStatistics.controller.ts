@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { StatusCodes } from "http-status-codes";
 import prisma from "../clients/db.client";
-import * as UsageStatisticsService from "../services/UsageStatisticsService";
+import * as UsageStatisticsService from "../services/usageStatistics.service";
 import { StatisticQuery } from "../validators";
 
 export default async function FetchStatisticsController(

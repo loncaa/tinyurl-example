@@ -8,7 +8,7 @@ import loggerMiddleware from "./middleware/logger.middleware";
 import appRoutes from "./routes";
 import { StatusCodes } from "http-status-codes";
 import { logger } from "./commons/logger";
-import transferStatistics from "./features/transferStatistics";
+import transferStatistics from "./features/transferStatistics.handler";
 
 const SERVER_PORT = process.env.SERVER_PORT;
 
