@@ -1,5 +1,5 @@
 import "./src/commons/devenv";
-import client from "./src/commons/db.client";
+import client from "./src/clients/db.client";
 import { logger } from "./src/commons/logger";
 
 async function execute() {
