@@ -2,25 +2,24 @@ import { Request, Response, NextFunction } from "express";
 import { StatusCodes } from "http-status-codes";
 import prisma from "../clients/db.client";
 import * as StatisticsService from "../services/StatisticsService";
+import { StatisticQuery } from "../validators";
 
 export default async function FetchStatisticsController(
   req: Request,
-  res: Response,
-  next: NextFunction
+  res: Response
 ) {
-  const { sort } = req.query;
+  const { period, take, cursor } = req.query as StatisticQuery;
   const { id } = req.params;
 
-  const statistics = await StatisticsService.findByShortUrlId(
-    prisma.usageStatistic,
-    id
-  );
+  const fetchQuantity = take ? parseInt(take) : 10;
 
-  const visits = await prisma.visitsCounter.findFirst({
-    where: {
-      id: id,
-    },
-  });
+  const statistics = await StatisticsService.findManyByShortUrlId(
+    prisma.usageStatistic,
+    id,
+    period,
+    fetchQuantity,
+    cursor
+  );
 
   if (!statistics) {
     return res.status(StatusCodes.OK).send({
@@ -28,8 +27,13 @@ export default async function FetchStatisticsController(
     });
   }
 
+  const nextCursor =
+    statistics.length === fetchQuantity
+      ? statistics[statistics.length - 1].id
+      : null;
+
   return res.status(StatusCodes.ACCEPTED).send({
     statistics,
-    visitsCounter: visits,
+    nextCursor,
   });
 }

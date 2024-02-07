@@ -31,8 +31,8 @@ Create a URL shortener with a JSON RESTful API containing 3 endpoints, one using
 **Execution plan** 
 - 
 ● Initialize npm  
-    - `npm i zod winston express cors helmet http-errors http-status-codes morga uuid @prisma/client`  
-    - `npm i --save-dev ts-node typescript dotenv nodemon prisma redis @types/express @types/http-errors @types/cors @types/http-status-codes @types/morgan @types/node @types/winston @types/redis @types/uuid`  
+    - `npm i zod winston express cors helmet http-errors http-status-codes morga uuid @prisma/client moment`  
+    - `npm i --save-dev ts-node typescript dotenv nodemon prisma redis @types/express @types/http-errors @types/cors @types/http-status-codes @types/morgan @types/node @types/winston @types/redis @types/uuid @types/moment`  
 ● Init GIT  
 ● Initialize Typescript, create build and debug script  
     - `npx tsc --init`

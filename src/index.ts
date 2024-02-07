@@ -41,5 +41,5 @@ app.listen(SERVER_PORT, () =>
 
 setInterval(() => {
   // fetch the counters and transfer to database
-  transferStatistics();
-}, 10 * 1000);
+  //transferStatistics();
+}, 1000);

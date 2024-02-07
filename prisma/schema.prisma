@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -22,17 +19,15 @@ model ShortUrl {
 model UsageStatistic {
   id            Int         @id @default(autoincrement())
   shortUrlId    String
-  createdAt     DateTime
-}
-
-model VisitsCounter {
-  id            String      @id
+  period        String      
+  value         Int
   counter       Int
+  year          Int
   createdAt     DateTime    @default(now())
   updatedAt     DateTime    @updatedAt
 }
 
 model CheckDate {
-  id            Int     @id @default(autoincrement())
+  id            Int         @id @default(autoincrement())
   date          String
 }

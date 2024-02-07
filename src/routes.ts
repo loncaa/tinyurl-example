@@ -1,8 +1,11 @@
 import express from "express";
 import { rateLimit } from "express-rate-limit";
 import { isAuthenticated } from "./middleware/auth.middleware";
-import { validateRequestPayload } from "./middleware/validation.middleware";
-import { inputBodyValidator } from "./validators";
+import {
+  validateRequestQuery,
+  validateRequestPayload,
+} from "./middleware/validation.middleware";
+import { inputBodyValidator, statisticQueryValidator } from "./validators";
 import ShortenUrlController from "./features/shortenUrlController";
 import RedirectToOriginController from "./features/redirectToOriginController";
 import FetchStatisticsController from "./features/fetchStatisticsController";
@@ -25,7 +28,12 @@ router.post(
   ShortenUrlController
 );
 
-router.get("/api/statistics/:id", isAuthenticated, FetchStatisticsController);
+router.get(
+  "/api/statistics/:id",
+  isAuthenticated,
+  validateRequestQuery(statisticQueryValidator),
+  FetchStatisticsController
+);
 
 router.get("/:id", limiter, RedirectToOriginController);
 

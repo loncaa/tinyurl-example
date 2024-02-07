@@ -14,4 +14,29 @@ const inputBodyValidator = zod.object({
 
 type InputBody = zod.infer<typeof inputBodyValidator>;
 
-export { inputBodyValidator, InputBody };
+const statisticQueryValidator = zod.object({
+  period: zod.enum(["year", "month", "week", "day", "hour"]),
+  take: zod
+    .string()
+    .refine(
+      (value) => /^[0-9]*$/.test(value),
+      "Take should contain only numbers"
+    )
+    .optional(),
+  cursor: zod
+    .string()
+    .refine(
+      (value) => /^[0-9]*$/.test(value),
+      "Cursor should contain only numbers"
+    )
+    .optional(),
+});
+
+type StatisticQuery = zod.infer<typeof statisticQueryValidator>;
+
+export {
+  inputBodyValidator,
+  statisticQueryValidator,
+  InputBody,
+  StatisticQuery,
+};

@@ -15,7 +15,14 @@ export const verifyRequest = (
   const parseResponse = schema.safeParse(data);
   if (!parseResponse.success) {
     const { error } = parseResponse as Zod.SafeParseError<typeof schema>;
-    const errorCode = error.errors.map(({ message }) => `${message}`).join(",");
+    const errorCode = error.errors
+
+      .map(
+        //@ts-ignore
+        ({ path, expected, message }) =>
+          `Field ${path.join(",")} ${message} ${expected}`
+      )
+      .join(",");
 
     return {
       failed: true,
@@ -35,6 +42,23 @@ export const validateRequestPayload =
   (schema: Zod.Schema) =>
   (req: Express.Request, res: Express.Response, next: Express.NextFunction) => {
     const reqObject = req.body;
+
+    const validationResponse = verifyRequest(schema, reqObject);
+
+    const validationResponseError = validationResponse as ZodValidationError;
+
+    if (validationResponseError.failed) {
+      const errorMessage = validationResponseError.message;
+      return next(createError(StatusCodes.BAD_REQUEST, errorMessage));
+    }
+
+    return next();
+  };
+
+export const validateRequestQuery =
+  (schema: Zod.Schema) =>
+  (req: Express.Request, res: Express.Response, next: Express.NextFunction) => {
+    const reqObject = req.query;
 
     const validationResponse = verifyRequest(schema, reqObject);
 
