@@ -1,7 +1,7 @@
 import { RedisClientType } from "@redis/client";
 import moment from "moment";
 import { ShortUrlDto } from "../commons/types";
-import transferUsageStatistics, {
+import persistUsageStatisticsData, {
   USAGE_STATISTICS_KEY,
 } from "../features/transferStatistics.handler";
 import { logger } from "../commons/logger";
@@ -82,6 +82,6 @@ export async function subscribeToExpiredKeyEvents(
     const keyParts = message.split(":");
     const shortUrlId = keyParts[1];
 
-    return transferUsageStatistics(redisClient, shortUrlId);
+    return persistUsageStatisticsData(redisClient, shortUrlId);
   });
 }

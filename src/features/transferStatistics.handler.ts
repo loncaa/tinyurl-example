@@ -5,10 +5,7 @@ import * as UsageStatisticsService from "../services/usageStatistics.service";
 
 export const USAGE_STATISTICS_KEY = "us";
 
-async function processUsageStatisticsData(
-  redisClient: RedisClientType,
-  key: string
-) {
+async function storeData(redisClient: RedisClientType, key: string) {
   const keyParts = key.split(`:`);
   const shortUrlId = keyParts[1];
   const periodId = keyParts[2];
@@ -28,16 +25,15 @@ async function processUsageStatisticsData(
   await redisClient.del(key);
 }
 
-export default async function transferUsageStatistics(
+export default async function persistUsageStatisticsData(
   redisClient: RedisClientType,
   shortUrlId: string
 ) {
-  logger.info("Statistics transfer started");
-
   const { keys } = await redisClient.scan(0, {
     COUNT: 5, // "week", "year", "day", "hour", "month"
     MATCH: `${USAGE_STATISTICS_KEY}:${shortUrlId}:*`,
   });
 
-  keys.forEach((key) => processUsageStatisticsData(redisClient, key));
+  // TODO: create a bulk update/transaction to db, and redis pipe
+  keys.forEach((key) => storeData(redisClient, key));
 }
