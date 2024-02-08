@@ -78,8 +78,6 @@ export async function subscribeToExpiredKeyEvents(
       return;
     }
 
-    console.log(`Key expired: ${message}`);
-
     const keyParts = message.split(":");
     const shortUrlId = keyParts[1];
 

@@ -3,14 +3,13 @@ import { StatusCodes } from "http-status-codes";
 import { ShortenUrlPayload } from "../validators";
 import prisma from "../clients/db.client";
 import createError from "http-errors";
-import { v4 } from "uuid";
 import { getClient } from "../clients/redis.client";
-import { logger } from "../commons/logger";
 import { Prisma } from "@prisma/client";
 import * as ShortUrlService from "../services/shortUrl.service";
 import * as RedisService from "../services/redis.service";
 import { RedisClientType } from "@redis/client";
 import { createUrl, createUniqueId } from "../commons/shortUrl.utils";
+import { ShortenUrlErrorMessage } from "../commons/error.factory";
 
 async function checkIfShortExists(
   redisClient: any,
@@ -53,7 +52,12 @@ export default async function ShortenUrlController(
     );
 
     if (exists) {
-      return next(createError(StatusCodes.BAD_REQUEST, "Short not accepted"));
+      return next(
+        createError(
+          StatusCodes.BAD_REQUEST,
+          ShortenUrlErrorMessage.ShortNotAccepted
+        )
+      );
     }
   } else {
     // if not exists, check for full url
@@ -68,7 +72,9 @@ export default async function ShortenUrlController(
   // otherwise, create a new entry
   const data = await ShortUrlService.create(shortUrlClient, uniqueId, full);
   if (!data) {
-    return next(createError(StatusCodes.CONFLICT, "Failed to create"));
+    return next(
+      createError(StatusCodes.CONFLICT, ShortenUrlErrorMessage.Failed)
+    );
   }
 
   RedisService.storeShortUrlData(redisClient, uniqueId, data);

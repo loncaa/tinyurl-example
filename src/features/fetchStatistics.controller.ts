@@ -3,6 +3,7 @@ import { StatusCodes } from "http-status-codes";
 import prisma from "../clients/db.client";
 import * as UsageStatisticsService from "../services/usageStatistics.service";
 import { StatisticQuery } from "../validators";
+import { UsageStatisticsErrorMessage } from "../commons/error.factory";
 
 export default async function FetchStatisticsController(
   req: Request,
@@ -32,7 +33,7 @@ export default async function FetchStatisticsController(
 
   if (!statistics) {
     return res.status(StatusCodes.OK).send({
-      message: "Statistics not found",
+      message: UsageStatisticsErrorMessage.NotFound,
     });
   }
 

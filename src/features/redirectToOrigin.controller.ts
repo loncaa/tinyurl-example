@@ -6,6 +6,7 @@ import { ShortUrlDto } from "../commons/types";
 import { findById } from "../services/shortUrl.service";
 import { RedisClientType } from "@redis/client";
 import * as RedisService from "../services/redis.service";
+import { ShortUrlErrorMessage } from "../commons/error.factory";
 
 export default async function RedirectToOriginController(
   req: Request,
@@ -31,7 +32,7 @@ export default async function RedirectToOriginController(
   const shortUrl = await findById(prisma.shortUrl, id);
   if (!shortUrl) {
     return res.status(StatusCodes.OK).send({
-      message: "Url not found",
+      message: ShortUrlErrorMessage.NotFound(id),
     });
   }
 
