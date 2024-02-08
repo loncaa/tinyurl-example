@@ -2,65 +2,55 @@
 -
 Create a URL shortener with a JSON RESTful API containing 3 endpoints, one using the GET method which will redirect the user to the original URL, one using the POST method to create a shortened URL, and the other using the GET method to return the app statistics.
 
+**Build**  
 Execute migration script in first build:  
 `docker-compose up --detach --build; docker-compose exec app npm run tables:create`  
 
-**Database seed**
--
-to seed database with short url ID:`example` and statistic data for period:`weeks`  
-execute npm script `npm run tables:seedWeeks`
-
-**Requirements**  
--
-● Node.js   
-● Cache with Redis  
-● PostgreSQL database  
-● Input JSON validation  
-● Error handling eg. HTTP status codes 
-● Dockerfile   
-● Metrics  
+**Database seeds**  
+To seed the database with short URL id:`example` and statistic data for period:`weeks` execute npm script:  
+`npm run tables:seedWeeks`  
 
 **Endpoints**  
 -
 **shorten url**  
-● Accepts an optional `short` property that defines what the shortened URL should look like  
-● If no `short` property was passed, use a pseudo-randomly generated string  
+Accepts an optional `short` property that defines what the shortened URL should look like  
+If no `short` property was passed, pseudo-randomly generated string is used for ID
 
 [POST] URI: `/api/shorten`  
 [REQUIRED]  
-headers: `X-API-KEY`  - user api key  
-body: `full`  - full url for shortening
+headers: `X-API-KEY`    - user api key, in this version it is required just to not be an empty string
+body: `full`            - full url ready for shortening
 
 [OPTIONAL]
-body: `short`  - custom shortening id  
-
-
+body: `short`           - custom shortening id  
 
 **redirect to origin**  
-● Redirect to the full-size URL  
+Redirects to the full-size URL  
 
 [GET] URI: `/:id`
 [REQUIRED]  
-params: `id` - id of the short url    
+params: `id`            - id of the short url    
 
 **fetch statistics data**  
-● Return valid data containing app usage statistics.  
-● Data should be sorted by period ( day, week, etc.. )  
+Returns valid data containing app usage statistics.  
 
 [GET] URI: `/api/statistics/:id`  
 [REQUIRED]  
-headers: `X-API-KEY`  - user api key  
-params: `id` - id of the short url  
-query: `period` - period of data ("week", "year", "day", "hour", "month")  
+headers: `X-API-KEY`    - user api key  
+params: `id`            - id of the short url  
+query: `period`         - period of data (required strings: "week", "year", "day", "hour", "month")  
 
 [OPTIONAL]  
-order - "asc", "desc"  
-cursor - id of the last short ulr from the list  
-take - quantity of returned statistics data (no more than 100)  
-from - date as a starting point of statistics  ("YYYY-MM-DD")  
-
-
+order                   - type of ordering (required strings: "asc", "desc")  
+cursor                  - ID of the last short URL from the list  
+take                    - quantity of returned statistics data (no more than 100)  
+from                    - date as a starting point of statistics  (required format: "YYYY-MM-DD")  
 
 **Scaling features**
 - 
-● Counter: collect redirect counts data on Redis and periodically transfer data to the Postgresql
+*Caching*  
+Instead of connecting to database on every request, Redis is used as a cache layer. Redis keys are checked first, and then if data is not found on Redis, server connects to the Database and fetches the data.  
+
+*Counting visits*  
+To prevent many connections to the database, Redis is used as a data aggregator. When a user uses a short URL, the backend increases Redis correlated keys to that short URL and increases them by 1, also Redis sets the timer key to expire in N milliseconds.  
+After the timer key expires, Redis publishes an event that tigers the job which persists Redis data into a database.
