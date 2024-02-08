@@ -10,6 +10,16 @@ Execute migration script in first build:
 To seed the database with short URL id:`example` and statistic data for period:`weeks` execute npm script:  
 `npm run tables:seedWeeks`  
 
+**Localhost environment variables**  
+Create a `.env` file in the root of the project and populate it with the variables:  
+```
+DATABASE_URL=
+REDIS_URL=
+SERVER_PORT=
+HOST=
+NODE_ENV=development
+```
+
 **Endpoints**  
 -
 **shorten url**  
