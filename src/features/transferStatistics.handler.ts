@@ -1,6 +1,3 @@
-// after N time, transfer Redis statistics to the Database
-
-import { getClient } from "../clients/redis.client";
 import prisma from "../clients/db.client";
 import { logger } from "../commons/logger";
 import { RedisClientType } from "@redis/client";
@@ -8,7 +5,7 @@ import * as UsageStatisticsService from "../services/usageStatistics.service";
 
 export const USAGE_STATISTICS_KEY = "us";
 
-async function processStatisticsData(
+async function processUsageStatisticsData(
   redisClient: RedisClientType,
   key: string
 ) {
@@ -31,14 +28,16 @@ async function processStatisticsData(
   await redisClient.del(key);
 }
 
-export default async function transferStatistics() {
+export default async function transferUsageStatistics(
+  redisClient: RedisClientType,
+  shortUrlId: string
+) {
   logger.info("Statistics transfer started");
-  const redisClient = (await getClient()) as RedisClientType;
 
   const { keys } = await redisClient.scan(0, {
-    COUNT: 100,
-    MATCH: `${USAGE_STATISTICS_KEY}:*:*`,
+    COUNT: 5, // "week", "year", "day", "hour", "month"
+    MATCH: `${USAGE_STATISTICS_KEY}:${shortUrlId}:*`,
   });
 
-  keys.forEach((key) => processStatisticsData(redisClient, key));
+  keys.forEach((key) => processUsageStatisticsData(redisClient, key));
 }

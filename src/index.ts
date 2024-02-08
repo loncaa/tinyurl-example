@@ -8,7 +8,9 @@ import loggerMiddleware from "./middleware/logger.middleware";
 import appRoutes from "./routes";
 import { StatusCodes } from "http-status-codes";
 import { logger } from "./commons/logger";
-import transferStatistics from "./features/transferStatistics.handler";
+import { getClient } from "./clients/redis.client";
+import { subscribeToExpiredKeyEvents } from "./services/redis.service";
+import { RedisClientType } from "@redis/client";
 
 const SERVER_PORT = process.env.SERVER_PORT;
 
@@ -35,11 +37,9 @@ app.use(function (_req: Request, _res: Response, next: NextFunction) {
 app.use(errorConverter);
 app.use(errorHandler);
 
-app.listen(SERVER_PORT, () =>
-  logger.info(`🚀 Server ready at: http://localhost:${SERVER_PORT}`)
-);
+app.listen(SERVER_PORT, async () => {
+  logger.info(`🚀 Server ready at: http://localhost:${SERVER_PORT}`);
 
-// fetch the counters from REDIS and transfer them to the database every 10 minutes
-setInterval(() => {
-  transferStatistics();
-}, 10 * 60 * 1000);
+  const redisClient = (await getClient()) as RedisClientType;
+  subscribeToExpiredKeyEvents(redisClient);
+});

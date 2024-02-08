@@ -9,7 +9,7 @@ import { logger } from "../commons/logger";
 import { Prisma } from "@prisma/client";
 import * as ShortUrlService from "../services/shortUrl.service";
 import * as RedisService from "../services/redis.service";
-import { RedisClientType } from "redis";
+import { RedisClientType } from "@redis/client";
 
 const createUniqueId = () => {
   const uuidArray = v4().split("-");
