@@ -44,7 +44,10 @@ export function storeShortUrlData(
   shortUrl: ShortUrlDto
 ) {
   try {
-    return redisClient.set(id, JSON.stringify(shortUrl));
+    // redis key expires after 3 days, just in case data from database is removed manually
+    return redisClient.set(id, JSON.stringify(shortUrl), {
+      EX: 60 * 60 * 24 * 3,
+    });
   } catch (error) {
     const redisError = error as Error;
     logger.error(`Redis failed to store: ${redisError.message}`);

@@ -16,7 +16,7 @@ export default async function RedirectToOriginController(
   const { id } = req.params;
 
   const redisClient = (await getClient()) as RedisClientType;
-  const dataStringified = await redisClient.get(id);
+  const dataStringified = await RedisService.fetchData(redisClient, id);
 
   if (dataStringified) {
     try {
