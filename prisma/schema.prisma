@@ -1,5 +1,5 @@
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
   binaryTargets = ["native", "linux-arm64-openssl-1.1.x"]
 }
 
@@ -9,26 +9,25 @@ datasource db {
 }
 
 model ShortUrl {
-  id            String      @id
-  full          String
-  shorten       String      @unique
-  private       Boolean     @default(false)
-  createdAt     DateTime    @default(now())
-  updatedAt     DateTime    @updatedAt
+  id             String           @id
+  full           String
+  private        Boolean          @default(false)
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
 }
 
 model UsageStatistic {
-  id            Int         @id @default(autoincrement())
-  shortUrlId    String
-  period        String      
-  value         Int
-  counter       Int
-  year          Int
-  createdAt     DateTime    @default(now())
-  updatedAt     DateTime    @updatedAt
+  id         Int      @id @default(autoincrement())
+  shortUrlId String
+  period     String
+  value      Int
+  counter    Int
+  year       Int
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 }
 
 model CheckDate {
-  id            Int         @id @default(autoincrement())
-  date          String
+  id   Int    @id @default(autoincrement())
+  date String
 }

@@ -2,13 +2,9 @@ import { Prisma } from "@prisma/client";
 import { ShortUrlDto } from "../commons/types";
 import { logger } from "../commons/logger";
 
-const createShortenUrl = (uniqueId: string) =>
-  `${process.env.HOST}/${uniqueId}`;
-
 const mapToCreateShortenUrlData = (uniqueId: string, full: string) => ({
   id: uniqueId,
   full: full,
-  shorten: createShortenUrl(uniqueId),
 });
 
 export async function create(

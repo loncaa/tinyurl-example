@@ -10,11 +10,7 @@ import { Prisma } from "@prisma/client";
 import * as ShortUrlService from "../services/shortUrl.service";
 import * as RedisService from "../services/redis.service";
 import { RedisClientType } from "@redis/client";
-
-const createUniqueId = () => {
-  const uuidArray = v4().split("-");
-  return uuidArray[uuidArray.length - 1];
-};
+import { createUrl, createUniqueId } from "../commons/shortUrl.utils";
 
 async function checkIfShortExists(
   redisClient: any,
@@ -71,9 +67,15 @@ export default async function ShortenUrlController(
 
   // otherwise, create a new entry
   const data = await ShortUrlService.create(shortUrlClient, uniqueId, full);
-  if (data) {
-    RedisService.storeShortUrlData(redisClient, uniqueId, data);
+  if (!data) {
+    return next(createError(StatusCodes.CONFLICT, "Failed to create"));
   }
 
-  return res.status(StatusCodes.CREATED).send(data);
+  RedisService.storeShortUrlData(redisClient, uniqueId, data);
+  const shortUrl = createUrl(data.id);
+
+  return res.status(StatusCodes.CREATED).send({
+    ...data,
+    url: shortUrl,
+  });
 }

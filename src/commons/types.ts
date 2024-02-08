@@ -1,7 +1,6 @@
 export interface ShortUrlDto {
   id: string;
   full: string;
-  shorten: string;
   private: boolean;
   createdAt: Date;
   updatedAt: Date;
