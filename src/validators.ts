@@ -30,6 +30,10 @@ const statisticQueryValidator = zod.object({
       (value) => /^[0-9]*$/.test(value),
       "Take should contain only numbers"
     )
+    .refine(
+      (value) => parseInt(value) <= 100,
+      "Take quantity cannot be no more than 100"
+    )
     .optional(),
   cursor: zod
     .string()
