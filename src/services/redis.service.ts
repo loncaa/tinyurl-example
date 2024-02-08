@@ -67,11 +67,12 @@ export function fetchData(redisClient: RedisClientType, key: string) {
 export async function subscribeToExpiredKeyEvents(
   redisClient: RedisClientType
 ) {
+  const expireKeyEvent = "__keyevent@0__:expired";
+
   const subClient = redisClient.duplicate();
   await subClient.connect();
   await subClient.sendCommand(["SET", "notify-keyspace-events", "Ex"]);
 
-  const expireKeyEvent = "__keyevent@0__:expired";
   subClient.subscribe(expireKeyEvent, (message, channel) => {
     if (channel !== expireKeyEvent || !message.includes("t:")) {
       return;
