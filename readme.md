@@ -8,54 +8,54 @@ Execute migration script in first build:
 **Requirements**  
 -
 ● Node.js   
-● Cache with Redis
+● Cache with Redis  
 ● PostgreSQL database  
 ● Input JSON validation  
 ● Error handling eg. HTTP status codes 
 ● Dockerfile   
 ● Metrics  
 
-*POST request requirements:*  
+**Endpoints**  
+-
+**shorten url**  
 ● Accepts an optional `short` property that defines what the shortened URL should look like  
 ● If no `short` property was passed, use a pseudo-randomly generated string  
-● If validation fails, return with the proper Restful codes.  
-● If the request body is invalid, show an appropriate error  
 
-*GET request requirements:*  
+[POST] URI: `/api/shorten`  
+[REQUIRED]  
+headers: `X-API-KEY`  - user api key  
+body: `full`  - full url for shortening
+
+[OPTIONAL]
+body: `short`  - custom shortening id  
+
+
+
+**redirect to origin**  
 ● Redirect to the full-size URL  
-● If the URL is invalid, show an appropriate error  
 
-*GET request requirements (statistics):*  
+[GET] URI: `/:id`
+[REQUIRED]  
+query: `id` - id of the short url    
+
+**fetch statistics data**  
 ● Return valid data containing app usage statistics.  
 ● Data should be sorted by period ( day, week, etc.. )  
-● Feel free to pre-seed the database to display more data.  
 
-**Execution plan** 
-- 
-● Initialize npm  
-&ensp; - `npm i zod winston express cors helmet http-errors http-status-codes morga uuid @prisma/client moment`  
-&ensp; - `npm i --save-dev ts-node typescript dotenv nodemon prisma redis @types/express @types/http-errors @types/cors @types/http-status-codes @types/morgan @types/node @types/winston @types/redis @types/uuid @types/moment`  
-● Init GIT  
-● Initialize Typescript, create build and debug script  
-&ensp; - `npx tsc --init`  
-● Setup Database client  
-&ensp; - `npx prisma init --datasource-provider postgresql`  
-● Setup Redis client  
-● Connect server with Docker containers of Redis and Postgresql 
-● Create Shortener endpoint  
-&ensp;- use body validation `Zod validator`  
-&ensp;- use dummy auth API key  
-&ensp;- store in PostgreSQL and REDIS 
-● Create Auth middleware  
-&ensp;- check for auth api key  
-● Create GET endpoint
-&ensp;- first check Redis then Database  
-&ensp;- store metrics into Redis  
-&ensp; - redirect to origin url  
-● Create Transform statistic function  
-● Create GET statistic function  
--
+[GET] URI: `/api/statistics/:id`  
+[REQUIRED]  
+headers: `X-API-KEY`  - user api key  
+query: `id` - id of the short url  
 
-**Features**
+[OPTIONAL]  
+period - period of statistic data ("week", "year", "day", "hour", "month")  
+order - "asc", "desc"  
+cursor - id of the last short ulr from the list  
+take - quantity of returned statistics data (no more than 100)  
+from - date as a starting point of statistics  ("YYYY-MM-DD")  
+
+
+
+**Scaling features**
 - 
 ● Counter: collect redirect counts data on Redis and periodically transfer data to the Postgresql
