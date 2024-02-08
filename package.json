@@ -7,6 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "tables:create": "npx prisma migrate dev --name init",
     "tables:update": "prisma db push",
+    "tables:format": "prisma format",
     "redisConnectionTest": "ts-node testRedisConnection.ts",
     "dbConnectionTest": "ts-node testDbConnection.ts",
     "dev": "nodemon --exec \"ts-node ./src/index.ts\"",
