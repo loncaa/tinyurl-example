@@ -8,7 +8,7 @@ export const USAGE_STATISTICS_KEY = "us";
 async function storeData(redisClient: RedisClientType, key: string) {
   const keyParts = key.split(`:`);
   const shortUrlId = keyParts[1];
-  const periodId = keyParts[2];
+  const periodKey = keyParts[2];
   const periodValue = parseInt(keyParts[3]);
   const yearOfPeriod = parseInt(keyParts[4]);
 
@@ -16,7 +16,7 @@ async function storeData(redisClient: RedisClientType, key: string) {
 
   await UsageStatisticsService.upsert(prisma.usageStatistic, {
     shortUrlId: shortUrlId,
-    period: periodId,
+    period: periodKey,
     value: periodValue,
     year: yearOfPeriod,
     counter: periodCount,
