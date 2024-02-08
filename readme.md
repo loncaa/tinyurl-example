@@ -5,6 +5,11 @@ Create a URL shortener with a JSON RESTful API containing 3 endpoints, one using
 Execute migration script in first build:  
 `docker-compose up --detach --build; docker-compose exec app npm run tables:create`  
 
+**Database seed**
+-
+to seed database with short url ID:`example` and statistic data for period:`weeks`  
+execute npm script `npm run tables:seedWeeks`
+
 **Requirements**  
 -
 ● Node.js   
@@ -36,7 +41,7 @@ body: `short`  - custom shortening id
 
 [GET] URI: `/:id`
 [REQUIRED]  
-query: `id` - id of the short url    
+params: `id` - id of the short url    
 
 **fetch statistics data**  
 ● Return valid data containing app usage statistics.  
@@ -45,10 +50,10 @@ query: `id` - id of the short url
 [GET] URI: `/api/statistics/:id`  
 [REQUIRED]  
 headers: `X-API-KEY`  - user api key  
-query: `id` - id of the short url  
+params: `id` - id of the short url  
+query: `period` - period of data ("week", "year", "day", "hour", "month")  
 
 [OPTIONAL]  
-period - period of statistic data ("week", "year", "day", "hour", "month")  
 order - "asc", "desc"  
 cursor - id of the last short ulr from the list  
 take - quantity of returned statistics data (no more than 100)  
