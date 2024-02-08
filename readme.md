@@ -11,7 +11,7 @@ To seed the database with short URL id:`example` and statistic data for period:`
 `npm run tables:seedWeeks`  
 
 **Localhost environment variables**  
-Create a `.env` file in the root of the project and populate it with the variables:  
+Create a `.env` file in the root of the project and populate it with variables:  
 ```
 DATABASE_URL=
 REDIS_URL=
