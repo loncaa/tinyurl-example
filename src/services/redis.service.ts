@@ -26,7 +26,7 @@ export function storeStatisticData(redisClient: RedisClientType, id: string) {
       redisClient.incr(`${usageStatisticsKey}:week:${week}:${year}`),
       redisClient.incr(`${usageStatisticsKey}:month:${month}:${year}`),
       redisClient.incr(`${usageStatisticsKey}:year:${year}:${year}`),
-      redisClient.set(`t:${id}`, "timer", { NX: true, EX: timerValue }), // set a timer, but only if not exists for this key
+      redisClient.set(`t:${id}`, "timer", { NX: true, EX: timerValue }), // set a timer, but only if it not exists for this key
     ]);
 
     return true;
