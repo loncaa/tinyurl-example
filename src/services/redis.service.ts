@@ -18,7 +18,7 @@ export function storeStatisticData(redisClient: RedisClientType, id: string) {
   const usageStatisticsKey = `${USAGE_STATISTICS_KEY}:${id}`;
 
   try {
-    const timerValue = 60 * 10; // 10 minutes
+    const timerValue = 60; // 1 minute, for testing purposes
 
     Promise.all([
       redisClient.incr(`${usageStatisticsKey}:hour:${hour}:${year}`),
@@ -71,7 +71,12 @@ export async function subscribeToExpiredKeyEvents(
 
   const subClient = redisClient.duplicate();
   await subClient.connect();
-  await subClient.sendCommand(["SET", "notify-keyspace-events", "Ex"]);
+  await subClient.sendCommand([
+    "CONFIG",
+    "SET",
+    "notify-keyspace-events",
+    "Ex",
+  ]);
 
   subClient.subscribe(expireKeyEvent, (message, channel) => {
     if (channel !== expireKeyEvent || !message.includes("t:")) {

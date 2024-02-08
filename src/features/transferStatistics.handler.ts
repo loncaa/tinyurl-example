@@ -12,7 +12,8 @@ async function storeData(redisClient: RedisClientType, key: string) {
   const periodValue = parseInt(keyParts[3]);
   const yearOfPeriod = parseInt(keyParts[4]);
 
-  const periodCount = parseInt((await redisClient.get(key)) || "0");
+  const counterString = await redisClient.get(key);
+  const periodCount = parseInt(counterString || "0");
 
   await UsageStatisticsService.upsert(prisma.usageStatistic, {
     shortUrlId: shortUrlId,
@@ -30,7 +31,7 @@ export default async function persistUsageStatisticsData(
   shortUrlId: string
 ) {
   const { keys } = await redisClient.scan(0, {
-    COUNT: 5, // "week", "year", "day", "hour", "month"
+    COUNT: 6, // "week", "year", "day", "hour", "month"
     MATCH: `${USAGE_STATISTICS_KEY}:${shortUrlId}:*`,
   });
 
