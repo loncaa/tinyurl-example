@@ -40,6 +40,9 @@ async function main() {
   const id = "example";
   const fullUrl = "https://example.com";
 
+  await prisma.shortUrl.deleteMany({});
+  await prisma.usageStatistic.deleteMany({});
+
   await ShortUrlService.create(prisma.shortUrl, id, fullUrl);
 
   await prisma.usageStatistic.createMany({
