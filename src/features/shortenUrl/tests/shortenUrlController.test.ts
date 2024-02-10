@@ -1,16 +1,16 @@
 import request from "supertest";
-import { ShortenUrlPayload } from "../../validators/shortenUrl.validator";
+import { ShortenUrlPayload } from "../shortenUrl.validator";
 
-import * as DbClient from "../../clients/db.client";
-import * as RedisClient from "../../clients/redis.client";
+import * as DbClient from "../../../clients/db.client";
+import * as RedisClient from "../../../clients/redis.client";
 
-import redisClientMock from "./redisClient.mock";
-import dbClientMock from "./dbClient.mock";
+import redisClientMock from "../../../clients/mocks/redisClient.mock";
+import dbClientMock from "../../../clients/mocks/dbClient.mock";
 
 Sinon.stub(RedisClient, "getRedisClient").callsFake(() => redisClientMock);
 Sinon.stub(DbClient, "getDbClient").callsFake(() => dbClientMock);
 
-import server from "../../index";
+import server from "../../../index";
 import Sinon from "sinon";
 
 const requestService = request(server);

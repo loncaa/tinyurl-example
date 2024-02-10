@@ -31,6 +31,17 @@ const statisticQueryValidator = zod.object({
   order: zod.enum(["asc", "desc"]).optional(),
 });
 
+const statisticParamsValidator = zod.object({
+  id: zod
+    .string()
+    .trim()
+    .min(3, { message: "Required minimum of 3 characters" })
+    .refine(
+      (value) => /^[a-zA-Z0-9]*$/.test(value),
+      "Id should contain only numbers and letters"
+    ),
+});
+
 type StatisticQuery = zod.infer<typeof statisticQueryValidator>;
 
-export { StatisticQuery, statisticQueryValidator };
+export { StatisticQuery, statisticQueryValidator, statisticParamsValidator };

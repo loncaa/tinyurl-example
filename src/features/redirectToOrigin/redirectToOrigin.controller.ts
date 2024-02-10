@@ -1,12 +1,12 @@
 import { Request, Response, NextFunction } from "express";
 import { StatusCodes } from "http-status-codes";
-import { getRedisClient } from "../clients/redis.client";
-import { getDbClient } from "../clients/db.client";
-import { ShortUrlDto } from "../commons/types";
-import { findById } from "../services/shortUrl.service";
+import { getRedisClient } from "../../clients/redis.client";
+import { getDbClient } from "../../clients/db.client";
+import { ShortUrlDto } from "../../commons/types";
+import { findById } from "../../services/shortUrl.service";
 import { RedisClientType } from "@redis/client";
-import * as RedisService from "../services/redis.service";
-import { ShortUrlErrorMessage } from "../commons/error.factory";
+import * as RedisService from "../../services/redis.service";
+import { ShortUrlErrorMessage } from "../../commons/error.factory";
 
 export default async function RedirectToOriginController(
   req: Request,
