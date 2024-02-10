@@ -2,7 +2,7 @@ import { Prisma } from "@prisma/client";
 import { ShortUrlDto } from "../commons/types";
 import { logger } from "../commons/logger";
 
-const mapToCreateShortenUrlData = (uniqueId: string, full: string) => ({
+const mapToCreateShortenUrlPayload = (uniqueId: string, full: string) => ({
   id: uniqueId,
   full: full,
 });
@@ -13,7 +13,7 @@ export async function create(
   full: string
 ): Promise<ShortUrlDto | null> {
   try {
-    const payload = mapToCreateShortenUrlData(uniqueId, full);
+    const payload = mapToCreateShortenUrlPayload(uniqueId, full);
     const data = await shortUrl.create({
       data: payload,
     });
