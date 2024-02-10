@@ -14,7 +14,7 @@ import { createServer } from "../../../server";
 import Sinon from "sinon";
 import { ShortUrlDto } from "../../../commons/types";
 
-const httpServer = createServer();
+const httpServer = createServer(3012);
 const requestService = request(httpServer);
 
 const shortUrlPayload: ShortenUrlPayload = {

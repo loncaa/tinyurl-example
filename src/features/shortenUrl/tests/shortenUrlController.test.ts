@@ -13,7 +13,7 @@ Sinon.stub(DbClient, "getDbClient").callsFake(() => dbClientMock);
 import { createServer } from "../../../server";
 import Sinon from "sinon";
 
-const httpServer = createServer();
+const httpServer = createServer(3013);
 const requestService = request(httpServer);
 
 const shortUrlPayload: ShortenUrlPayload = {
