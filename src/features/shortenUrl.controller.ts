@@ -1,15 +1,15 @@
 import { Request, Response, NextFunction } from "express";
 import { StatusCodes } from "http-status-codes";
-import { ShortenUrlPayload } from "../validators";
-import prisma from "../clients/db.client";
+import { getDbClient } from "../clients/db.client";
 import createError from "http-errors";
-import { getClient } from "../clients/redis.client";
+import { getRedisClient } from "../clients/redis.client";
 import { Prisma } from "@prisma/client";
 import * as ShortUrlService from "../services/shortUrl.service";
 import * as RedisService from "../services/redis.service";
 import { RedisClientType } from "@redis/client";
 import { createUrl, createUniqueId } from "../commons/shortUrl.utils";
 import { ShortenUrlErrorMessage } from "../commons/error.factory";
+import { ShortenUrlPayload } from "../validators/shortenUrl.validator";
 
 async function checkIfShortExists(
   redisClient: any,
@@ -36,8 +36,10 @@ export default async function ShortenUrlController(
 ) {
   const { full, short } = req.body as ShortenUrlPayload;
 
-  const redisClient = (await getClient()) as RedisClientType;
-  const shortUrlClient = prisma.shortUrl;
+  const redisClient = (await getRedisClient()) as RedisClientType;
+  const dbClient = getDbClient();
+
+  const shortUrlClient = dbClient.shortUrl;
 
   let uniqueId = createUniqueId();
 

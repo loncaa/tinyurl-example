@@ -1,4 +1,4 @@
-import prisma from "../clients/db.client";
+import { getDbClient } from "../clients/db.client";
 import { logger } from "../commons/logger";
 import { RedisClientType } from "@redis/client";
 import * as UsageStatisticsService from "../services/usageStatistics.service";
@@ -42,7 +42,8 @@ async function storeData(redisClient: RedisClientType, key: string) {
   const payload = await mapToUpsertStatisticPayload(key, counterString);
   if (!payload) return;
 
-  await UsageStatisticsService.upsert(prisma.usageStatistic, payload);
+  const dbClient = getDbClient();
+  await UsageStatisticsService.upsert(dbClient.usageStatistic, payload);
 
   await redisClient.del(key);
 }

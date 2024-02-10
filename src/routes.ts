@@ -4,14 +4,14 @@ import { isAuthenticated } from "./middleware/auth.middleware";
 import {
   validateRequestQuery,
   validateRequestPayload,
+  validateRequestParams,
 } from "./middleware/validation.middleware";
-import {
-  shortenUrlPayloadValidator,
-  statisticQueryValidator,
-} from "./validators";
+import { redirectToOriginParamsValidator } from "./validators/redirectToOrigin.validator";
 import ShortenUrlController from "./features/shortenUrl.controller";
 import RedirectToOriginController from "./features/redirectToOrigin.controller";
 import FetchStatisticsController from "./features/fetchStatistics.controller";
+import { shortenUrlPayloadValidator } from "./validators/shortenUrl.validator";
+import { statisticQueryValidator } from "./validators/fetchStatistics.validator";
 
 // best case scenario: use external server as rate limiter
 const limiter = rateLimit({
@@ -38,6 +38,11 @@ router.get(
   FetchStatisticsController
 );
 
-router.get("/:id", limiter, RedirectToOriginController);
+router.get(
+  "/:id",
+  limiter,
+  validateRequestParams(redirectToOriginParamsValidator),
+  RedirectToOriginController
+);
 
 export default router;
