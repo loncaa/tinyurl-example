@@ -42,7 +42,7 @@ export default async function FetchStatisticsController(
       ? statistics[statistics.length - 1].id
       : null;
 
-  return res.status(StatusCodes.ACCEPTED).send({
+  return res.status(StatusCodes.OK).send({
     statistics,
     nextCursor,
   });
