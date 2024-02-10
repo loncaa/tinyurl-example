@@ -67,7 +67,7 @@ export default async function ShortenUrlController(
 
     // if it is not private, return it
     if (shortUrl && !shortUrl.private) {
-      return res.status(StatusCodes.ACCEPTED).send(shortUrl);
+      return res.status(StatusCodes.OK).send(shortUrl);
     }
   }
 
