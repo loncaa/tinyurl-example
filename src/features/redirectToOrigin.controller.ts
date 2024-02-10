@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { StatusCodes } from "http-status-codes";
-import { getClient } from "../clients/redis.client";
-import prisma from "../clients/db.client";
+import { getRedisClient } from "../clients/redis.client";
+import { getDbClient } from "../clients/db.client";
 import { ShortUrlDto } from "../commons/types";
 import { findById } from "../services/shortUrl.service";
 import { RedisClientType } from "@redis/client";
@@ -15,7 +15,8 @@ export default async function RedirectToOriginController(
 ) {
   const { id } = req.params;
 
-  const redisClient = (await getClient()) as RedisClientType;
+  const dbClient = getDbClient();
+  const redisClient = (await getRedisClient()) as RedisClientType;
   const dataStringified = await RedisService.fetchData(redisClient, id);
 
   if (dataStringified) {
@@ -29,7 +30,7 @@ export default async function RedirectToOriginController(
     }
   }
 
-  const shortUrl = await findById(prisma.shortUrl, id);
+  const shortUrl = await findById(dbClient.shortUrl, id);
   if (!shortUrl) {
     return res.status(StatusCodes.OK).send({
       message: ShortUrlErrorMessage.NotFound(id),

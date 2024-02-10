@@ -8,7 +8,7 @@ import loggerMiddleware from "./middleware/logger.middleware";
 import appRoutes from "./routes";
 import { StatusCodes } from "http-status-codes";
 import { logger } from "./commons/logger";
-import { getClient } from "./clients/redis.client";
+import { getRedisClient } from "./clients/redis.client";
 import { subscribeToExpiredKeyEvents } from "./services/redis.service";
 import { RedisClientType } from "@redis/client";
 
@@ -40,6 +40,8 @@ app.use(errorHandler);
 app.listen(SERVER_PORT, async () => {
   logger.info(`🚀 Server ready at: http://localhost:${SERVER_PORT}`);
 
-  const redisClient = (await getClient()) as RedisClientType;
+  const redisClient = (await getRedisClient()) as RedisClientType;
   subscribeToExpiredKeyEvents(redisClient);
 });
+
+export default app;
