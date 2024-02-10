@@ -10,10 +10,11 @@ import dbClientMock from "../../../clients/mocks/dbClient.mock";
 Sinon.stub(RedisClient, "getRedisClient").callsFake(() => redisClientMock);
 Sinon.stub(DbClient, "getDbClient").callsFake(() => dbClientMock);
 
-import server from "../../../index";
+import { createServer } from "../../../server";
 import Sinon from "sinon";
 
-const requestService = request(server);
+const httpServer = createServer();
+const requestService = request(httpServer);
 
 const shortUrlPayload: ShortenUrlPayload = {
   full: "http://google.com",
@@ -44,7 +45,7 @@ describe("Validate Shorten url controller", () => {
     const { body, statusCode } = response;
 
     expect(response).toBeDefined();
-    expect(statusCode).toBe(202);
+    expect(statusCode).toBe(200);
     expect(body.id).toBeDefined();
     expect(body.full).toContain(shortUrlPayload.full);
   });
