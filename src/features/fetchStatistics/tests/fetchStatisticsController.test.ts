@@ -10,19 +10,20 @@ import dbClientMock from "../../../clients/mocks/dbClient.mock";
 Sinon.stub(RedisClient, "getRedisClient").callsFake(() => redisClientMock);
 Sinon.stub(DbClient, "getDbClient").callsFake(() => dbClientMock);
 
-import server from "../../../index";
+import { createServer } from "../../../server";
 import Sinon from "sinon";
 import { ShortUrlDto } from "../../../commons/types";
-import persistUsageStatisticsData from "../../transferStatistics.handler";
+import persistUsageStatisticsData from "../../transferStatistics/transferStatistics.handler";
 
-const requestService = request(server);
+const httpServer = createServer();
+const requestService = request(httpServer);
 
 const shortUrlPayload: ShortenUrlPayload = {
   full: "http://google.com",
 };
 let shortUrlDto: ShortUrlDto | null = null;
 
-describe("Validate Redirect to Origin controller", () => {
+describe("Validate Fetch statistics controller", () => {
   beforeAll(async () => {
     const { body } = await requestService
       .post("/api/shorten")
@@ -43,8 +44,20 @@ describe("Validate Redirect to Origin controller", () => {
     const { body, statusCode } = response;
 
     expect(response).toBeDefined();
-    expect(statusCode).toBe(202);
+    expect(statusCode).toBe(200);
     expect(body.statistics).toBeDefined();
+  });
+
+  it("should fail because of wrong period string", async () => {
+    const response = await requestService
+      .get(`/api/statistics/${shortUrlDto?.id}?period=wrong`)
+      .set("x-api-key", "api-key");
+
+    const { body, statusCode } = response;
+
+    expect(response).toBeDefined();
+    expect(statusCode).toBe(400);
+    expect(body.message).toContain("Failed to validate payload");
   });
 
   it("should fail because of missing required query param", async () => {

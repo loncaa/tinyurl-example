@@ -4,7 +4,6 @@
   "description": "**Goal**   - Create a URL shortener with a JSON RESTful API containing 3 endpoints, one using the GET method which will redirect the user to the original URL, one using the POST method to create a shortened URL, and the other using the GET method to return the app statistics.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "tables:create": "npx prisma migrate dev --name init",
     "tables:update": "prisma db push",
     "tables:format": "prisma format",
@@ -14,7 +13,8 @@
     "dev": "nodemon --exec \"ts-node ./src/index.ts\"",
     "watch": "tsc --watch",
     "build": "tsc",
-    "start": "node ./dist/index.js"
+    "start": "node ./dist/index.js",
+    "test": "jest ."
   },
   "author": "",
   "license": "ISC",

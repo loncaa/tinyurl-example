@@ -1,8 +1,8 @@
-import { getDbClient } from "../clients/db.client";
-import { logger } from "../commons/logger";
+import { getDbClient } from "../../clients/db.client";
+import { logger } from "../../commons/logger";
 import { RedisClientType } from "@redis/client";
-import * as UsageStatisticsService from "../services/usageStatistics.service";
-import { UpsertStatisticPayload } from "../commons/types";
+import * as UsageStatisticsService from "../../services/usageStatistics.service";
+import { UpsertStatisticPayload } from "../../commons/types";
 
 export const USAGE_STATISTICS_KEY = "us";
 

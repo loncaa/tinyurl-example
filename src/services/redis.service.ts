@@ -3,7 +3,7 @@ import moment from "moment";
 import { ShortUrlDto } from "../commons/types";
 import persistUsageStatisticsData, {
   USAGE_STATISTICS_KEY,
-} from "../features/transferStatistics.handler";
+} from "../features/transferStatistics/transferStatistics.handler";
 import { logger } from "../commons/logger";
 
 export function storeStatisticData(redisClient: RedisClientType, id: string) {

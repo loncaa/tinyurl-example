@@ -16,6 +16,7 @@ const redisClientMock: any = {
     return this.db[key];
   },
   connect: () => {},
+  del: () => {},
   sendCommand: () => {},
   subscribe: () => {},
   duplicate: () => ({ ...redisClientMock }),
