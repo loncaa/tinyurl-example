@@ -20,7 +20,9 @@ const redisClientMock: any = {
   subscribe: () => {},
   duplicate: () => ({ ...redisClientMock }),
   scan: function () {
-    return Object.keys(this.db);
+    return {
+      keys: Object.keys(this.db),
+    };
   },
   isOpen: true,
 };

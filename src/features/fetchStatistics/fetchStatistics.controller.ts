@@ -1,9 +1,9 @@
 import { Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
-import { getDbClient } from "../clients/db.client";
-import * as UsageStatisticsService from "../services/usageStatistics.service";
-import { UsageStatisticsErrorMessage } from "../commons/error.factory";
-import { StatisticQuery } from "../validators/fetchStatistics.validator";
+import { getDbClient } from "../../clients/db.client";
+import * as UsageStatisticsService from "../../services/usageStatistics.service";
+import { UsageStatisticsErrorMessage } from "../../commons/error.factory";
+import { StatisticQuery } from "./fetchStatistics.validator";
 
 export default async function FetchStatisticsController(
   req: Request,

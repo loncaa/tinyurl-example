@@ -6,12 +6,15 @@ import {
   validateRequestPayload,
   validateRequestParams,
 } from "./middleware/validation.middleware";
-import { redirectToOriginParamsValidator } from "./validators/redirectToOrigin.validator";
-import ShortenUrlController from "./features/shortenUrl.controller";
-import RedirectToOriginController from "./features/redirectToOrigin.controller";
-import FetchStatisticsController from "./features/fetchStatistics.controller";
-import { shortenUrlPayloadValidator } from "./validators/shortenUrl.validator";
-import { statisticQueryValidator } from "./validators/fetchStatistics.validator";
+import { redirectToOriginParamsValidator } from "./features/redirectToOrigin/redirectToOrigin.validator";
+import ShortenUrlController from "./features/shortenUrl/shortenUrl.controller";
+import RedirectToOriginController from "./features/redirectToOrigin/redirectToOrigin.controller";
+import FetchStatisticsController from "./features/fetchStatistics/fetchStatistics.controller";
+import { shortenUrlPayloadValidator } from "./features/shortenUrl/shortenUrl.validator";
+import {
+  statisticParamsValidator,
+  statisticQueryValidator,
+} from "./features/fetchStatistics/fetchStatistics.validator";
 
 // best case scenario: use external server as rate limiter
 const limiter = rateLimit({
@@ -34,6 +37,7 @@ router.post(
 router.get(
   "/api/statistics/:id",
   isAuthenticated,
+  validateRequestParams(statisticParamsValidator),
   validateRequestQuery(statisticQueryValidator),
   FetchStatisticsController
 );
