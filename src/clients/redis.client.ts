@@ -1,15 +1,19 @@
-import { createClient } from "redis";
+import { RedisClientType, createClient } from "redis";
 import { logger } from "../commons/logger";
 
-const client = createClient({
-  url: process.env.REDIS_URL,
-});
+let client: RedisClientType<any> | null = null;
 
-client.on("error", (err) => {
-  logger.error(`Redis Client [${process.env.REDIS_URL}] Error: ${err}`);
-});
+export async function getRedisClient(): Promise<RedisClientType<any>> {
+  if (!client) {
+    client = createClient({
+      url: process.env.REDIS_URL,
+    });
 
-export async function getClient(): Promise<typeof client> {
+    client.on("error", (err) => {
+      logger.error(`Redis Client [${process.env.REDIS_URL}] Error: ${err}`);
+    });
+  }
+
   if (!client.isOpen) {
     await client.connect();
   }

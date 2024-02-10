@@ -1,19 +1,11 @@
 import { PrismaClient } from "@prisma/client";
 
-const prisma = new PrismaClient();
+let prisma: PrismaClient<any> | null = null;
 
-function execute(prismaQuery: Promise<any>) {
-  return prismaQuery
-    .then(async () => {
-      await prisma.$disconnect();
-    })
+export function getDbClient() {
+  if (!prisma) {
+    prisma = new PrismaClient();
+  }
 
-    .catch(async (e) => {
-      console.error(e);
-
-      await prisma.$disconnect();
-      process.exit(1);
-    });
+  return prisma;
 }
-
-export default prisma;
