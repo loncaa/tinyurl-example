@@ -15,7 +15,7 @@ import Sinon from "sinon";
 import { ShortUrlDto } from "../../../commons/types";
 import persistUsageStatisticsData from "../../transferStatistics/transferStatistics.handler";
 
-const httpServer = createServer();
+const httpServer = createServer(3011);
 const requestService = request(httpServer);
 
 const shortUrlPayload: ShortenUrlPayload = {

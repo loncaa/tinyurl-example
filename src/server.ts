@@ -12,8 +12,6 @@ import { getRedisClient } from "./clients/redis.client";
 import { subscribeToExpiredKeyEvents } from "./services/redis.service";
 import { RedisClientType } from "@redis/client";
 
-const SERVER_PORT = process.env.SERVER_PORT;
-
 const app = express();
 
 app.use(cors());
@@ -37,9 +35,9 @@ app.use(function (_req: Request, _res: Response, next: NextFunction) {
 app.use(errorConverter);
 app.use(errorHandler);
 
-export function createServer() {
-  const server = app.listen(SERVER_PORT, async () => {
-    logger.info(`🚀 Server ready at: http://localhost:${SERVER_PORT}`);
+export function createServer(port: string | number) {
+  const server = app.listen(port, async () => {
+    logger.info(`🚀 Server ready at: http://localhost:${port}`);
 
     const redisClient = (await getRedisClient()) as RedisClientType;
     subscribeToExpiredKeyEvents(redisClient);
