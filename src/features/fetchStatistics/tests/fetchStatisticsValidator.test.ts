@@ -1,6 +1,8 @@
 import {
   statisticQueryValidator,
   statisticParamsValidator,
+  StatisticQuery,
+  StatisticParams,
 } from "../fetchStatistics.validator";
 
 describe("Test statistic Query Validator", () => {
@@ -12,7 +14,9 @@ describe("Test statistic Query Validator", () => {
       cursor: "123",
       order: "asc",
     };
-    const result = statisticQueryValidator.safeParse(validQuery);
+    const result = statisticQueryValidator.safeParse(
+      validQuery
+    ) as Zod.SafeParseSuccess<StatisticQuery>;
     const { data, success } = result;
 
     expect(data).toEqual(validQuery);
@@ -24,7 +28,9 @@ describe("Test statistic Query Validator", () => {
       period: "month",
       from: "invalid-date",
     };
-    const result = statisticQueryValidator.safeParse(invalidQuery);
+    const result = statisticQueryValidator.safeParse(
+      invalidQuery
+    ) as Zod.SafeParseError<typeof statisticQueryValidator>;
 
     const { error, success } = result;
 
@@ -39,7 +45,9 @@ describe("Test statistic Query Validator", () => {
       period: "month",
       take: "150",
     };
-    const result = statisticQueryValidator.safeParse(invalidQuery);
+    const result = statisticQueryValidator.safeParse(
+      invalidQuery
+    ) as Zod.SafeParseError<typeof statisticQueryValidator>;
 
     const { error, success } = result;
 
@@ -55,7 +63,9 @@ describe("Test statistic Params Validator", () => {
     const validParams = {
       id: "abc123",
     };
-    const result = statisticParamsValidator.safeParse(validParams);
+    const result = statisticParamsValidator.safeParse(
+      validParams
+    ) as Zod.SafeParseSuccess<StatisticParams>;
     const { data, success } = result;
 
     expect(data).toEqual(validParams);
@@ -66,7 +76,9 @@ describe("Test statistic Params Validator", () => {
     const invalidParams = {
       id: "ab",
     };
-    const result = statisticParamsValidator.safeParse(invalidParams);
+    const result = statisticParamsValidator.safeParse(
+      invalidParams
+    ) as Zod.SafeParseError<typeof statisticQueryValidator>;
 
     const { error, success } = result;
 
@@ -78,7 +90,9 @@ describe("Test statistic Params Validator", () => {
     const invalidParams = {
       id: "abc@123",
     };
-    const result = statisticParamsValidator.safeParse(invalidParams);
+    const result = statisticParamsValidator.safeParse(
+      invalidParams
+    ) as Zod.SafeParseError<typeof statisticQueryValidator>;
 
     const { error, success } = result;
 

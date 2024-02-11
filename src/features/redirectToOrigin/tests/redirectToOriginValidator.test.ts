@@ -1,11 +1,14 @@
-import { redirectToOriginParamsValidator } from "../redirectToOrigin.validator";
+import {
+  redirectToOriginParamsValidator,
+  RedirectToOriginParams,
+} from "../redirectToOrigin.validator";
 
 describe("Test redirect to origin params validator", () => {
   it("should validate a valid id", () => {
     const validId = "abc123";
     const response = redirectToOriginParamsValidator.safeParse({
       id: validId,
-    });
+    }) as Zod.SafeParseSuccess<RedirectToOriginParams>;
     const { data, success } = response;
 
     expect(data).toEqual({ id: validId });
@@ -16,7 +19,7 @@ describe("Test redirect to origin params validator", () => {
     const invalidId = "ab";
     const response = redirectToOriginParamsValidator.safeParse({
       id: invalidId,
-    });
+    }) as Zod.SafeParseError<typeof redirectToOriginParamsValidator>;
 
     const { error, success } = response;
 
@@ -29,7 +32,7 @@ describe("Test redirect to origin params validator", () => {
     const invalidId = "abc@123";
     const response = redirectToOriginParamsValidator.safeParse({
       id: invalidId,
-    });
+    }) as Zod.SafeParseError<typeof redirectToOriginParamsValidator>;
 
     const { error, success } = response;
 
@@ -44,7 +47,7 @@ describe("Test redirect to origin params validator", () => {
     const invalidId = "abc 123";
     const response = redirectToOriginParamsValidator.safeParse({
       id: invalidId,
-    });
+    }) as Zod.SafeParseError<typeof redirectToOriginParamsValidator>;
 
     const { error, success } = response;
 

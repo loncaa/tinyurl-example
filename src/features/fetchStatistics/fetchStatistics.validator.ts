@@ -43,5 +43,11 @@ const statisticParamsValidator = zod.object({
 });
 
 type StatisticQuery = zod.infer<typeof statisticQueryValidator>;
+type StatisticParams = zod.infer<typeof statisticParamsValidator>;
 
-export { StatisticQuery, statisticQueryValidator, statisticParamsValidator };
+export {
+  StatisticQuery,
+  StatisticParams,
+  statisticQueryValidator,
+  statisticParamsValidator,
+};

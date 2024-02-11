@@ -1,4 +1,7 @@
-import { shortenUrlPayloadValidator } from "../shortenUrl.validator";
+import {
+  shortenUrlPayloadValidator,
+  ShortenUrlPayload,
+} from "../shortenUrl.validator";
 
 describe("shortenUrlPayloadValidator", () => {
   it("should validate a valid payload", () => {
@@ -6,8 +9,9 @@ describe("shortenUrlPayloadValidator", () => {
       full: "https://example.com",
       short: "abc123",
     };
-    const result = shortenUrlPayloadValidator.safeParse(validPayload);
-    const { data, success } = result;
+    const { data, success } = shortenUrlPayloadValidator.safeParse(
+      validPayload
+    ) as Zod.SafeParseSuccess<ShortenUrlPayload>;
 
     expect(data).toEqual(validPayload);
     expect(success).toEqual(true);
@@ -17,7 +21,9 @@ describe("shortenUrlPayloadValidator", () => {
     const invalidPayload = {
       short: "abc123",
     };
-    const result = shortenUrlPayloadValidator.safeParse(invalidPayload);
+    const result = shortenUrlPayloadValidator.safeParse(
+      invalidPayload
+    ) as Zod.SafeParseError<typeof shortenUrlPayloadValidator>;
 
     const { error, success } = result;
 
@@ -31,7 +37,9 @@ describe("shortenUrlPayloadValidator", () => {
       full: "invalid-url",
       short: "abc123",
     };
-    const result = shortenUrlPayloadValidator.safeParse(invalidPayload);
+    const result = shortenUrlPayloadValidator.safeParse(
+      invalidPayload
+    ) as Zod.SafeParseError<typeof shortenUrlPayloadValidator>;
 
     const { error, success } = result;
 
@@ -44,7 +52,9 @@ describe("shortenUrlPayloadValidator", () => {
       full: "https://example.com",
       short: "ab",
     };
-    const result = shortenUrlPayloadValidator.safeParse(invalidPayload);
+    const result = shortenUrlPayloadValidator.safeParse(
+      invalidPayload
+    ) as Zod.SafeParseError<typeof shortenUrlPayloadValidator>;
 
     const { error, success } = result;
 
@@ -57,7 +67,9 @@ describe("shortenUrlPayloadValidator", () => {
       full: "https://example.com",
       short: "abc@123",
     };
-    const result = shortenUrlPayloadValidator.safeParse(invalidPayload);
+    const result = shortenUrlPayloadValidator.safeParse(
+      invalidPayload
+    ) as Zod.SafeParseError<typeof shortenUrlPayloadValidator>;
 
     const { error, success } = result;
 
