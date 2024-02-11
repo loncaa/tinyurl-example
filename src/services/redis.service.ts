@@ -6,6 +6,16 @@ import persistUsageStatisticsData, {
 } from "../features/transferStatistics/transferStatistics.handler";
 import { logger } from "../commons/logger";
 
+export function createStatisticRedisKey(
+  id: string,
+  type: "hour" | "day" | "week" | "month" | "year",
+  value: number | string,
+  currentYear: number | string
+) {
+  const usageStatisticsKey = `${USAGE_STATISTICS_KEY}:${id}`;
+  return `${usageStatisticsKey}:${type}:${value}:${currentYear}`;
+}
+
 export function storeStatisticData(redisClient: RedisClientType, id: string) {
   const now = moment();
 
@@ -15,17 +25,21 @@ export function storeStatisticData(redisClient: RedisClientType, id: string) {
   const month = now.month();
   const year = now.year();
 
-  const usageStatisticsKey = `${USAGE_STATISTICS_KEY}:${id}`;
-
   try {
     const timerValue = 60; // 1 minute, for testing purposes
 
+    const hourKey = createStatisticRedisKey(id, "hour", hour, year);
+    const dayKey = createStatisticRedisKey(id, "day", day, year);
+    const weekKey = createStatisticRedisKey(id, "week", week, year);
+    const monthKey = createStatisticRedisKey(id, "month", month, year);
+    const yearKey = createStatisticRedisKey(id, "year", year, year);
+
     Promise.all([
-      redisClient.incr(`${usageStatisticsKey}:hour:${hour}:${year}`),
-      redisClient.incr(`${usageStatisticsKey}:day:${day}:${year}`),
-      redisClient.incr(`${usageStatisticsKey}:week:${week}:${year}`),
-      redisClient.incr(`${usageStatisticsKey}:month:${month}:${year}`),
-      redisClient.incr(`${usageStatisticsKey}:year:${year}:${year}`),
+      redisClient.incr(hourKey),
+      redisClient.incr(dayKey),
+      redisClient.incr(weekKey),
+      redisClient.incr(monthKey),
+      redisClient.incr(yearKey),
       redisClient.set(`t:${id}`, "timer", { NX: true, EX: timerValue }), // set a timer, but only if it not exists for this key
     ]);
 
