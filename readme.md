@@ -8,7 +8,7 @@ URL shortener with a JSON RESTful API containing 3 endpoints.
 Execute migration script in first build:  
 `docker-compose up --detach --build; docker-compose exec app npm run tables:create`  
 
-### Database seeds
+## Database seeds
 To seed the database with short URL id:`example` and statistic data for period:`weeks` execute npm script:  
 `npm run tables:seedWeeks`  
 
@@ -20,57 +20,65 @@ REDIS_URL=
 SERVER_PORT=
 HOST=
 NODE_ENV=development
-```
-
-## Endpoints
-### Shorten url 
+```  
+  
+    
+# API Endpoints
+## Shorten url 
 Accepts an optional `short` property that defines what the shortened URL should look like  
 If no `short` property was passed, pseudo-randomly generated string is used for ID
 ```
 [POST] URI: `/api/shorten`  
 ```
-#### [REQUIRED]  
-```
-headers: `X-API-KEY`    - user api key, in this version it is required just to not be an empty string
-body: `full`            - full url ready for shortening
-```
+#### HEADERS   
+| Field | Required | Description |
+|------ | ---------| ----------- |
+| x-api-key | true | user api key, in this version it is required just to not be an empty string|
 
-#### [OPTIONAL]  
-```
-body: `short`           - custom shortening id  
-```
+#### BODY PAYLOAD  
+| Field | Required | Description |
+|------ | ---------| ----------- |
+| full  | true | full url ready for shortening
+| short | false | custom shortening id  
 
-### Redirect to origin
+
+## Redirect to origin
 Redirects to the full-size URL  
 
 ```
-[GET] URI: `/:id`
-```
+[GET] URI: `/:id`  
+```  
 
-#### [REQUIRED]  
-```
-params: `id`            - id of the short url    
-```
+#### URL PARAMS  
+| Field | Required | Description |
+|------ | ---------| ----------- |
+| id    | true     | id of the short url |
 
-### Fetch statistics data  
+## Fetch statistics data  
 Returns valid data containing app usage statistics.  
 ```
 [GET] URI: `/api/statistics/:id`  
-```
-#### [REQUIRED]  
-```
-headers: `X-API-KEY`    - user api key  
-params: `id`            - id of the short url  
-query: `period`         - period of data (required strings: "week", "year", "day", "hour", "month")  
-```
+```  
+  
+#### HEADERS   
+| Field | Required | Description |
+|------ | ---------| ----------- |
+| x-api-key | true | user api key, in this version it is required just to not be an empty string|  
 
-#### [OPTIONAL]  
-```
-order                   - type of ordering (required strings: "asc", "desc")  
-cursor                  - ID of the last short URL from the list  
-take                    - quantity of returned statistics data (no more than 100)  
-from                    - date as a starting point of statistics  (required format: "YYYY-MM-DD")  
-```
+#### URL PARAMS  
+| Field | Required | Description |
+|------ | ---------| ----------- |
+| id    | true     | id of the short url|
+
+#### URL QUERY  
+| Field | Required | Description | Requirements |
+|------ | ---------| ----------- | ---- |
+| period  | true | period of data | "week", "year", "day", "hour", "month"
+|order | false | type of ordering | "asc", "desc"
+|cursor | false | ID of the last short URL from the list 
+|take | false | quantity of returned statistics data | no more than 100
+| from | false | date as a starting point of statistics | "YYYY-MM-DD"
+
 
 ## Scaling features
 ### Caching  
