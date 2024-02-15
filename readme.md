@@ -1,12 +1,14 @@
-**Url Shortener**  
--
-Create a URL shortener with a JSON RESTful API containing 3 endpoints, one using the GET method which will redirect the user to the original URL, one using the POST method to create a shortened URL, and the other using the GET method to return the app statistics.
+# Url Shortener  
+URL shortener with a JSON RESTful API containing 3 endpoints. 
+- GET method that redirects the user to the original URL. 
+- POST method to create a shortened URL
+- GET method to return the app statistics
 
-**Build**  
+## Build  
 Execute migration script in first build:  
 `docker-compose up --detach --build; docker-compose exec app npm run tables:create`  
 
-**Database seeds**  
+### Database seeds
 To seed the database with short URL id:`example` and statistic data for period:`weeks` execute npm script:  
 `npm run tables:seedWeeks`  
 
@@ -20,47 +22,60 @@ HOST=
 NODE_ENV=development
 ```
 
-**Endpoints**  
--
-**shorten url**  
+## Endpoints
+### Shorten url 
 Accepts an optional `short` property that defines what the shortened URL should look like  
 If no `short` property was passed, pseudo-randomly generated string is used for ID
-
+```
 [POST] URI: `/api/shorten`  
-[REQUIRED]  
+```
+#### [REQUIRED]  
+```
 headers: `X-API-KEY`    - user api key, in this version it is required just to not be an empty string
 body: `full`            - full url ready for shortening
+```
 
-[OPTIONAL]
+#### [OPTIONAL]  
+```
 body: `short`           - custom shortening id  
+```
 
-**redirect to origin**  
+### Redirect to origin
 Redirects to the full-size URL  
 
+```
 [GET] URI: `/:id`
-[REQUIRED]  
+```
+
+#### [REQUIRED]  
+```
 params: `id`            - id of the short url    
+```
 
-**fetch statistics data**  
+### Fetch statistics data  
 Returns valid data containing app usage statistics.  
-
+```
 [GET] URI: `/api/statistics/:id`  
-[REQUIRED]  
+```
+#### [REQUIRED]  
+```
 headers: `X-API-KEY`    - user api key  
 params: `id`            - id of the short url  
 query: `period`         - period of data (required strings: "week", "year", "day", "hour", "month")  
+```
 
-[OPTIONAL]  
+#### [OPTIONAL]  
+```
 order                   - type of ordering (required strings: "asc", "desc")  
 cursor                  - ID of the last short URL from the list  
 take                    - quantity of returned statistics data (no more than 100)  
 from                    - date as a starting point of statistics  (required format: "YYYY-MM-DD")  
+```
 
-**Scaling features**
-- 
-*Caching*  
+## Scaling features
+### Caching  
 Instead of connecting to database on every request, Redis is used as a cache layer. Redis keys are checked first, and then if data is not found on Redis, server connects to the Database and fetches the data.  
 
-*Counting visits*  
+### Counting visits  
 To prevent many connections to the database, Redis is used as a data aggregator. When a user uses a short URL, the backend increases Redis correlated keys to that short URL and increases them by 1, also Redis sets the timer key to expire in N milliseconds.  
 After the timer key expires, Redis publishes an event that tigers the job which persists Redis data into a database.
